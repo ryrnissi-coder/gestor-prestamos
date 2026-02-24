@@ -28,7 +28,7 @@ export default function Loans() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: loans, isLoading } = trpc.loans.list.useQuery(
-    statusFilter !== "all" ? { status: statusFilter as any } : undefined
+    statusFilter !== "all" ? { status: statusFilter as any } : {}
   );
   const { data: borrowers } = trpc.borrowers.list.useQuery();
 

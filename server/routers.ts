@@ -86,7 +86,7 @@ const loansRouter = router({
     .input(z.object({
       status: z.enum(["active", "paid", "overdue", "cancelled"]).optional(),
       borrowerId: z.number().optional(),
-    }).optional())
+    }).optional().default({}))
     .query(({ ctx, input }) => getLoans(ctx.user.id, input)),
 
   get: protectedProcedure
@@ -193,7 +193,7 @@ const paymentsRouter = router({
       borrowerId: z.number().optional(),
       from: z.string().optional(),
       to: z.string().optional(),
-    }).optional())
+    }).optional().default({}))
     .query(({ ctx, input }) => getPayments(ctx.user.id, input)),
 
   create: protectedProcedure

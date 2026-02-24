@@ -37,7 +37,7 @@ export default function Reports() {
   const [toDate, setToDate] = useState("");
 
   const { data: loans, isLoading: loansLoading } = trpc.loans.list.useQuery(
-    loanStatus !== "all" ? { status: loanStatus as any } : undefined
+    loanStatus !== "all" ? { status: loanStatus as any } : {}
   );
   const { data: payments, isLoading: paymentsLoading } = trpc.payments.list.useQuery({
     from: fromDate || undefined,
