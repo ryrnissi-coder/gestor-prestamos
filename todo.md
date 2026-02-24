@@ -1,0 +1,54 @@
+# GestorPréstamos - TODO
+
+## Base de datos y backend
+- [x] Esquema DB: tabla clientes (borrowers)
+- [x] Esquema DB: tabla préstamos (loans)
+- [x] Esquema DB: tabla pagos (payments)
+- [x] Esquema DB: tabla tabla de amortización (amortization_schedule)
+- [x] Migración DB con pnpm db:push
+- [x] Helpers de DB para clientes, préstamos, pagos
+- [x] Router tRPC: clientes (CRUD)
+- [x] Router tRPC: préstamos (CRUD + cálculo de amortización)
+- [x] Router tRPC: pagos (registro y seguimiento)
+- [x] Router tRPC: dashboard (estadísticas y alertas)
+- [x] Router tRPC: reportes (filtros por fecha/cliente/estado)
+- [x] Lógica de interés simple e interés compuesto
+- [x] Lógica de generación de tabla de amortización (semanal/quincenal/mensual)
+
+## Frontend - Layout y autenticación
+- [x] Estilos globales elegantes (paleta de colores, tipografía)
+- [x] DashboardLayout con sidebar de navegación
+- [x] Página de login / autenticación
+- [x] Rutas protegidas
+
+## Frontend - Dashboard
+- [x] Tarjetas de resumen (préstamos activos, vencidos, cobros pendientes, total cobrado)
+- [x] Gráfico de préstamos por estado
+- [x] Lista de pagos próximos a vencer
+- [x] Alertas de pagos vencidos
+
+## Frontend - Clientes
+- [x] Lista de clientes con búsqueda y filtros
+- [x] Formulario crear/editar cliente
+- [x] Perfil de cliente con historial de préstamos
+- [x] Eliminar cliente
+
+## Frontend - Préstamos
+- [x] Lista de préstamos con filtros por estado
+- [x] Formulario crear préstamo (monto, tasa, plazo, frecuencia, tipo de interés)
+- [x] Vista detalle del préstamo con tabla de amortización
+- [x] Cambio de estado del préstamo (activo/pagado/vencido)
+
+## Frontend - Pagos
+- [x] Registro de pago con fecha, monto y método
+- [x] Historial de pagos por préstamo
+- [x] Marcar cuota como pagada desde tabla de amortización
+
+## Frontend - Reportes
+- [x] Reporte de préstamos con filtros
+- [x] Reporte de cobros/pagos con filtros
+- [x] Historial completo de transacciones
+
+## Pruebas
+- [x] Tests vitest para lógica de amortización (9 tests)
+- [x] Tests vitest para auth logout
