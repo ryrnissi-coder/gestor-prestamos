@@ -52,3 +52,9 @@
 ## Pruebas
 - [x] Tests vitest para lógica de amortización (9 tests)
 - [x] Tests vitest para auth logout
+
+## Mejoras - WhatsApp
+- [x] Botón "Enviar recordatorio WhatsApp" en cuotas vencidas del dashboard
+- [x] Botón "Enviar recordatorio WhatsApp" en cuotas próximas a vencer del dashboard
+- [x] Botón WhatsApp en perfil del cliente
+- [x] Mensaje pre-escrito con nombre, tipo de cuota y texto estándar

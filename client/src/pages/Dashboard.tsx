@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { formatCurrency, formatDate, isOverdue, getLoanStatusLabel } from "@/lib/utils";
+import { formatCurrency, formatDate, getLoanStatusLabel, getFrequencyLabel } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,62 @@ import {
   Users,
   ArrowRight,
   DollarSign,
+  MessageCircle,
 } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
+// ─── Utilidad para generar enlace de WhatsApp ─────────────────────────────────
+function buildWhatsAppUrl(phone: string | null | undefined, message: string): string {
+  const cleaned = (phone ?? "").replace(/\D/g, "");
+  const encoded = encodeURIComponent(message);
+  if (cleaned) {
+    return `https://wa.me/${cleaned}?text=${encoded}`;
+  }
+  // Sin número: abre WhatsApp Web con el mensaje listo para elegir contacto
+  return `https://web.whatsapp.com/send?text=${encoded}`;
+}
+
+function buildReminderMessage(
+  firstName: string,
+  lastName: string,
+  frequency: string
+): string {
+  const freqLabel = getFrequencyLabel(frequency);
+  return (
+    `Estimado(a) ${firstName} ${lastName}, este mensaje es para recordarle que se encuentra pendiente su cuota ${freqLabel} de su compromiso de pago con nosotros, favor realizarlo a la brevedad. En caso de haberlo realizado, favor enviar el comprobante para la aplicación.`
+  );
+}
+
+// ─── WhatsApp Button ──────────────────────────────────────────────────────────
+function WhatsAppButton({
+  phone,
+  firstName,
+  lastName,
+  frequency,
+}: {
+  phone: string | null | undefined;
+  firstName: string;
+  lastName: string;
+  frequency: string;
+}) {
+  const message = buildReminderMessage(firstName, lastName, frequency);
+  const url = buildWhatsAppUrl(phone, message);
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      title="Enviar recordatorio por WhatsApp"
+      className="inline-flex items-center justify-center h-7 w-7 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 transition-colors shrink-0"
+    >
+      <MessageCircle className="h-3.5 w-3.5" />
+    </a>
+  );
+}
+
+// ─── Stat Card ────────────────────────────────────────────────────────────────
 function StatCard({
   title,
   value,
@@ -56,6 +109,7 @@ function StatCard({
   );
 }
 
+// ─── Dashboard ────────────────────────────────────────────────────────────────
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { data: stats, isLoading: statsLoading } = trpc.dashboard.stats.useQuery();
@@ -182,7 +236,7 @@ export default function Dashboard() {
           <CardContent>
             {overdueLoading ? (
               <div className="space-y-2">
-                {[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
+                {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
               </div>
             ) : overdueItems?.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-muted-foreground gap-2">
@@ -190,24 +244,35 @@ export default function Dashboard() {
                 <p className="text-sm">Sin cuotas vencidas</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
                 {overdueItems?.map((item) => (
                   <div
                     key={item.scheduleId}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-red-50 border border-red-100 cursor-pointer hover:bg-red-100 transition-colors"
-                    onClick={() => setLocation(`/loans/${item.loanId}`)}
+                    className="flex items-center gap-2 p-2.5 rounded-lg bg-red-50 border border-red-100 hover:bg-red-100 transition-colors"
                   >
-                    <div className="min-w-0">
+                    {/* Info — clickable */}
+                    <div
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={() => setLocation(`/loans/${item.loanId}`)}
+                    >
                       <p className="text-xs font-medium text-foreground truncate">
-                        {borrowerMap.get(item.borrowerId) ?? `Cliente #${item.borrowerId}`}
+                        {item.borrowerFirstName} {item.borrowerLastName}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         Cuota #{item.periodNumber} · {formatDate(item.dueDate as unknown as string)}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold text-destructive ml-2 shrink-0">
+                    {/* Amount */}
+                    <span className="text-xs font-semibold text-destructive shrink-0">
                       {formatCurrency(item.totalPayment as string)}
                     </span>
+                    {/* WhatsApp button */}
+                    <WhatsAppButton
+                      phone={item.borrowerPhone}
+                      firstName={item.borrowerFirstName}
+                      lastName={item.borrowerLastName}
+                      frequency={item.paymentFrequency}
+                    />
                   </div>
                 ))}
               </div>
@@ -231,7 +296,7 @@ export default function Dashboard() {
           <CardContent>
             {upcomingLoading ? (
               <div className="space-y-2">
-                {[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
+                {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
               </div>
             ) : upcomingItems?.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-muted-foreground gap-2">
@@ -239,24 +304,35 @@ export default function Dashboard() {
                 <p className="text-sm">Sin vencimientos próximos</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
                 {upcomingItems?.map((item) => (
                   <div
                     key={item.scheduleId}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-amber-50 border border-amber-100 cursor-pointer hover:bg-amber-100 transition-colors"
-                    onClick={() => setLocation(`/loans/${item.loanId}`)}
+                    className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-50 border border-amber-100 hover:bg-amber-100 transition-colors"
                   >
-                    <div className="min-w-0">
+                    {/* Info — clickable */}
+                    <div
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={() => setLocation(`/loans/${item.loanId}`)}
+                    >
                       <p className="text-xs font-medium text-foreground truncate">
-                        {borrowerMap.get(item.borrowerId) ?? `Cliente #${item.borrowerId}`}
+                        {item.borrowerFirstName} {item.borrowerLastName}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         Cuota #{item.periodNumber} · {formatDate(item.dueDate as unknown as string)}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold text-amber-700 ml-2 shrink-0">
+                    {/* Amount */}
+                    <span className="text-xs font-semibold text-amber-700 shrink-0">
                       {formatCurrency(item.totalPayment as string)}
                     </span>
+                    {/* WhatsApp button */}
+                    <WhatsAppButton
+                      phone={item.borrowerPhone}
+                      firstName={item.borrowerFirstName}
+                      lastName={item.borrowerLastName}
+                      frequency={item.paymentFrequency}
+                    />
                   </div>
                 ))}
               </div>

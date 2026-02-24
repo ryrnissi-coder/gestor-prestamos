@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, name, email, loginMethod, role, DATE_FORMAT(createdAt, '%Y-%m-%d %H:%i') as createdAt FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, name, email, loginMethod, role, DATE_FORMAT(createdAt, '%Y-%m-%d %H:%i') as createdAt FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Joel Cortés",
+      "email": "ryrnissi@gmail.com",
+      "loginMethod": "google",
+      "role": "admin",
+      "createdAt": "2026-02-24 00:32"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\tloginMethod\trole\tcreatedAt\n1\tJoel Cortés\tryrnissi@gmail.com\tgoogle\tadmin\t2026-02-24 00:32\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

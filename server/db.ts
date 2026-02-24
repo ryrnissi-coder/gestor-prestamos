@@ -254,9 +254,14 @@ export async function getOverdueScheduleItems(userId: number) {
     dueDate: amortizationSchedule.dueDate,
     totalPayment: amortizationSchedule.totalPayment,
     borrowerId: loans.borrowerId,
+    paymentFrequency: loans.paymentFrequency,
+    borrowerFirstName: borrowers.firstName,
+    borrowerLastName: borrowers.lastName,
+    borrowerPhone: borrowers.phone,
   })
     .from(amortizationSchedule)
     .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
+    .innerJoin(borrowers, eq(loans.borrowerId, borrowers.id))
     .where(and(
       eq(loans.userId, userId),
       eq(amortizationSchedule.isPaid, false),
@@ -278,9 +283,14 @@ export async function getUpcomingScheduleItems(userId: number) {
     dueDate: amortizationSchedule.dueDate,
     totalPayment: amortizationSchedule.totalPayment,
     borrowerId: loans.borrowerId,
+    paymentFrequency: loans.paymentFrequency,
+    borrowerFirstName: borrowers.firstName,
+    borrowerLastName: borrowers.lastName,
+    borrowerPhone: borrowers.phone,
   })
     .from(amortizationSchedule)
     .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
+    .innerJoin(borrowers, eq(loans.borrowerId, borrowers.id))
     .where(and(
       eq(loans.userId, userId),
       eq(amortizationSchedule.isPaid, false),

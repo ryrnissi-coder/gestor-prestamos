@@ -5,7 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Phone, Mail, MapPin, IdCard, Banknote, Plus } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, IdCard, Banknote, Plus, MessageCircle } from "lucide-react";
+
+function buildWhatsAppUrl(phone: string | null | undefined, message: string): string {
+  const cleaned = (phone ?? "").replace(/\D/g, "");
+  const encoded = encodeURIComponent(message);
+  if (cleaned) return `https://wa.me/${cleaned}?text=${encoded}`;
+  return `https://web.whatsapp.com/send?text=${encoded}`;
+}
 
 const statusColors: Record<string, string> = {
   active: "bg-green-100 text-green-700 border-green-200",
@@ -95,7 +102,16 @@ export default function BorrowerDetail() {
               {borrower.phone && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Phone className="h-3.5 w-3.5 shrink-0" />
-                  <span>{borrower.phone}</span>
+                  <span className="flex-1">{borrower.phone}</span>
+                  <a
+                    href={buildWhatsAppUrl(borrower.phone, `Estimado(a) ${borrower.firstName} ${borrower.lastName}, este mensaje es para recordarle que se encuentra pendiente su cuota de su compromiso de pago con nosotros, favor realizarlo a la brevedad. En caso de haberlo realizado, favor enviar el comprobante para la aplicación.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Enviar mensaje por WhatsApp"
+                    className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-green-100 hover:bg-green-200 text-green-700 transition-colors shrink-0"
+                  >
+                    <MessageCircle className="h-3 w-3" />
+                  </a>
                 </div>
               )}
               {borrower.email && (
