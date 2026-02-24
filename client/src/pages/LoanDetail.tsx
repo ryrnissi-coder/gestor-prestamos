@@ -44,7 +44,18 @@ import {
   Percent,
   User,
   ShieldCheck,
+  Trash2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const statusColors: Record<string, string> = {
   active: "bg-green-100 text-green-700 border-green-200",
@@ -59,6 +70,7 @@ export default function LoanDetail() {
   const loanId = parseInt(id ?? "0");
 
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
   const [selectedAmount, setSelectedAmount] = useState("");
   const [paymentForm, setPaymentForm] = useState({
@@ -103,6 +115,14 @@ export default function LoanDetail() {
       toast.success("Cuota marcada como pendiente");
     },
     onError: (e) => toast.error("Error: " + e.message),
+  });
+
+  const deleteLoanMutation = trpc.loans.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Préstamo eliminado");
+      setLocation("/loans");
+    },
+    onError: (e) => toast.error("Error al eliminar: " + e.message),
   });
 
   const updateStatusMutation = trpc.loans.updateStatus.useMutation({
@@ -216,6 +236,15 @@ export default function LoanDetail() {
           <Button size="sm" className="gap-1.5" onClick={() => openPaymentDialog()}>
             <Plus className="h-3.5 w-3.5" />
             Registrar Pago
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Eliminar
           </Button>
         </div>
       </div>
@@ -530,6 +559,28 @@ export default function LoanDetail() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Loan Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este préstamo?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción es permanente. Se eliminará el préstamo #{loan.id}, toda su tabla de amortización y todos los pagos registrados. No se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => deleteLoanMutation.mutate({ id: loanId })}
+              disabled={deleteLoanMutation.isPending}
+            >
+              {deleteLoanMutation.isPending ? "Eliminando..." : "Sí, eliminar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

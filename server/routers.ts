@@ -16,6 +16,7 @@ import {
   getAmortizationSchedule,
   createAmortizationSchedule,
   deleteAmortizationSchedule,
+  deleteLoan,
   markScheduleRowPaid,
   markScheduleRowUnpaid,
   getPayments,
@@ -181,6 +182,13 @@ const loansRouter = router({
     .input(z.object({ scheduleId: z.number() }))
     .mutation(async ({ input }) => {
       await markScheduleRowUnpaid(input.scheduleId);
+      return { success: true };
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await deleteLoan(input.id, ctx.user.id);
       return { success: true };
     }),
 });

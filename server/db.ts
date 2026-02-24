@@ -128,6 +128,15 @@ export async function updateLoan(id: number, userId: number, data: Partial<Inser
   return db.update(loans).set(data).where(and(eq(loans.id, id), eq(loans.userId, userId)));
 }
 
+export async function deleteLoan(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB not available");
+  // Delete related records first
+  await db.delete(amortizationSchedule).where(eq(amortizationSchedule.loanId, id));
+  await db.delete(payments).where(eq(payments.loanId, id));
+  return db.delete(loans).where(and(eq(loans.id, id), eq(loans.userId, userId)));
+}
+
 // ─── Amortization Schedule ────────────────────────────────────────────────────
 export async function getAmortizationSchedule(loanId: number) {
   const db = await getDb();
@@ -193,39 +202,50 @@ export async function getDashboardStats(userId: number) {
   const today = new Date().toISOString().split("T")[0];
   const sevenDaysLater = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
 
-  const [allLoans, allPayments, overdueSchedule, upcomingSchedule] = await Promise.all([
-    db.select().from(loans).where(eq(loans.userId, userId)),
-    db.select().from(payments).where(eq(payments.userId, userId)),
-    db.select().from(amortizationSchedule)
-      .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
-      .where(and(
-        eq(loans.userId, userId),
-        eq(amortizationSchedule.isPaid, false),
-      sql`${amortizationSchedule.dueDate} < ${today}`,
-    )),
-    db.select().from(amortizationSchedule)
-      .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
-      .where(and(
-        eq(loans.userId, userId),
-        eq(amortizationSchedule.isPaid, false),
-        sql`${amortizationSchedule.dueDate} >= ${today}`,
-        sql`${amortizationSchedule.dueDate} <= ${sevenDaysLater}`,
-      )),
-  ]);
+  // Run queries independently so one failure doesn't break the whole dashboard
+  const allLoans = await db.select().from(loans).where(eq(loans.userId, userId)).catch(() => []);
+  const allPayments = await db.select().from(payments).where(eq(payments.userId, userId)).catch(() => []);
+
+  const overdueSchedule = await db.select({
+    scheduleId: amortizationSchedule.id,
+    totalPayment: amortizationSchedule.totalPayment,
+  })
+    .from(amortizationSchedule)
+    .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
+    .where(and(
+      eq(loans.userId, userId),
+      eq(amortizationSchedule.isPaid, false),
+      sql`DATE(${amortizationSchedule.dueDate}) < ${today}`,
+    ))
+    .catch(() => []);
+
+  const upcomingSchedule = await db.select({
+    scheduleId: amortizationSchedule.id,
+    totalPayment: amortizationSchedule.totalPayment,
+  })
+    .from(amortizationSchedule)
+    .innerJoin(loans, eq(amortizationSchedule.loanId, loans.id))
+    .where(and(
+      eq(loans.userId, userId),
+      eq(amortizationSchedule.isPaid, false),
+      sql`DATE(${amortizationSchedule.dueDate}) >= ${today}`,
+      sql`DATE(${amortizationSchedule.dueDate}) <= ${sevenDaysLater}`,
+    ))
+    .catch(() => []);
 
   const activeLoans = allLoans.filter((l) => l.status === "active");
   const overdueLoans = allLoans.filter((l) => l.status === "overdue");
   const paidLoans = allLoans.filter((l) => l.status === "paid");
 
-  const totalDisbursed = allLoans.reduce((s, l) => s + parseFloat(l.amount as string), 0);
-  const totalCollected = allPayments.reduce((s, p) => s + parseFloat(p.amount as string), 0);
+  const totalDisbursed = allLoans.reduce((s, l) => s + parseFloat(String(l.amount) || "0"), 0);
+  const totalCollected = allPayments.reduce((s, p) => s + parseFloat(String(p.amount) || "0"), 0);
 
   const pendingAmount = overdueSchedule.reduce(
-    (s, r) => s + parseFloat((r.amortization_schedule as any).totalPayment as string),
+    (s, r) => s + parseFloat(String(r.totalPayment) || "0"),
     0
   );
   const upcomingAmount = upcomingSchedule.reduce(
-    (s, r) => s + parseFloat((r.amortization_schedule as any).totalPayment as string),
+    (s, r) => s + parseFloat(String(r.totalPayment) || "0"),
     0
   );
 
@@ -265,7 +285,7 @@ export async function getOverdueScheduleItems(userId: number) {
     .where(and(
       eq(loans.userId, userId),
       eq(amortizationSchedule.isPaid, false),
-      sql`${amortizationSchedule.dueDate} < ${today}`,
+      sql`DATE(${amortizationSchedule.dueDate}) < ${today}`,
     ))
     .orderBy(amortizationSchedule.dueDate)
     .limit(20);
@@ -294,8 +314,8 @@ export async function getUpcomingScheduleItems(userId: number) {
     .where(and(
       eq(loans.userId, userId),
       eq(amortizationSchedule.isPaid, false),
-      sql`${amortizationSchedule.dueDate} >= ${today}`,
-      sql`${amortizationSchedule.dueDate} <= ${sevenDaysLater}`,
+      sql`DATE(${amortizationSchedule.dueDate}) >= ${today}`,
+      sql`DATE(${amortizationSchedule.dueDate}) <= ${sevenDaysLater}`,
     ))
     .orderBy(amortizationSchedule.dueDate)
     .limit(20);

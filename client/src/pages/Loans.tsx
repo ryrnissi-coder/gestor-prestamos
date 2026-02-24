@@ -13,7 +13,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLocation } from "wouter";
-import { Banknote, Plus, Search, Eye, Calendar, Percent } from "lucide-react";
+import { Banknote, Plus, Search, Eye, Calendar, Percent, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const statusColors: Record<string, string> = {
   active: "bg-green-100 text-green-700 border-green-200",
@@ -26,11 +37,24 @@ export default function Loans() {
   const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const utils = trpc.useUtils();
 
   const { data: loans, isLoading } = trpc.loans.list.useQuery(
     statusFilter !== "all" ? { status: statusFilter as any } : {}
   );
   const { data: borrowers } = trpc.borrowers.list.useQuery();
+
+  const deleteMutation = trpc.loans.delete.useMutation({
+    onSuccess: () => {
+      utils.loans.list.invalidate();
+      utils.dashboard.stats.invalidate();
+      toast.success("Préstamo eliminado");
+      setDeleteId(null);
+    },
+    onError: (e) => toast.error("Error al eliminar: " + e.message),
+  });
 
   const borrowerMap = new Map(borrowers?.map((b) => [b.id, `${b.firstName} ${b.lastName}`]) ?? []);
 
@@ -163,14 +187,26 @@ export default function Loans() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setLocation(`/loans/${loan.id}`)}
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => setLocation(`/loans/${loan.id}`)}
+                          title="Ver detalle"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteId(loan.id)}
+                          title="Eliminar"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -179,6 +215,27 @@ export default function Loans() {
           </table>
         </div>
       </Card>
+      {/* Delete Confirmation */}
+      <AlertDialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este préstamo?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción es permanente. Se eliminará el préstamo, su tabla de amortización y todos los pagos registrados. No se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => deleteId && deleteMutation.mutate({ id: deleteId })}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Eliminando..." : "Sí, eliminar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -70,3 +70,10 @@
 - [x] Actualizar tabla de amortización en LoanDetail para mostrar columna seguro
 - [x] Actualizar reportes con desglose de seguro vs capital vs interés
 - [x] Migrar base de datos con pnpm db:push
+
+## Correcciones y mejoras pendientes
+- [ ] Investigar y corregir error al crear préstamo (mensaje rojo aunque registra)
+- [ ] Verificar que todos los campos numéricos se envíen como number (no string) al servidor
+- [ ] Botón eliminar préstamo con confirmación
+- [ ] Botón eliminar cliente con confirmación
+- [ ] Botón eliminar pago con confirmación
