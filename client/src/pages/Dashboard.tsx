@@ -13,7 +13,7 @@ import {
   Clock,
   Users,
   ArrowRight,
-  DollarSign,
+  Coins,
   MessageCircle,
 } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
@@ -173,7 +173,7 @@ export default function Dashboard() {
           title="Total Cobrado"
           value={formatCurrency(stats?.totalCollected ?? 0)}
           subtitle="Pagos recibidos"
-          icon={DollarSign}
+          icon={Coins}
           color="bg-green-50 text-green-600"
           loading={statsLoading}
         />
