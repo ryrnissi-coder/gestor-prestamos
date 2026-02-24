@@ -148,7 +148,12 @@ export async function createAmortizationSchedule(rows: InsertAmortizationSchedul
   const db = await getDb();
   if (!db) throw new Error("DB not available");
   if (rows.length === 0) return;
-  return db.insert(amortizationSchedule).values(rows);
+  // Insert in batches of 10 to avoid MySQL max parameter limits
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+    const batch = rows.slice(i, i + BATCH_SIZE);
+    await db.insert(amortizationSchedule).values(batch);
+  }
 }
 
 export async function deleteAmortizationSchedule(loanId: number) {
