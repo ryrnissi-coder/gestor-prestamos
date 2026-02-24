@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLocation } from "wouter";
-import { BarChart3, ExternalLink, TrendingUp, DollarSign, Banknote, Users } from "lucide-react";
+import { BarChart3, ExternalLink, TrendingUp, Coins, Banknote, Users, ShieldCheck } from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -89,6 +89,7 @@ export default function Reports() {
 
   const totalLoanAmount = filteredLoans.reduce((s, l) => s + parseFloat(l.amount as string), 0);
   const totalPayments = payments?.reduce((s, p) => s + parseFloat(p.amount as string), 0) ?? 0;
+  const totalInsurance = filteredLoans.reduce((s, l) => s + parseFloat(l.insuranceAmount as string ?? "0") * l.termPeriods, 0);
 
   return (
     <div className="space-y-5 p-1">
@@ -178,7 +179,7 @@ export default function Reports() {
         <Card className="border border-border shadow-sm">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="h-4 w-4 text-success" />
+              <Coins className="h-4 w-4 text-success" />
               <p className="text-xs text-muted-foreground">Cobros (período)</p>
             </div>
             <p className="text-xl font-bold text-success">{formatCurrency(totalPayments)}</p>
@@ -194,6 +195,22 @@ export default function Reports() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Desglose de Seguro */}
+      {totalInsurance > 0 && (
+        <Card className="border border-blue-200 bg-blue-50/40 shadow-sm">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="h-5 w-5 text-blue-600 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-blue-800">Total Seguros en Cartera</p>
+                <p className="text-xs text-blue-600">Suma de todos los seguros por cuota en los préstamos filtrados</p>
+              </div>
+              <p className="ml-auto text-xl font-bold text-blue-700">{formatCurrency(totalInsurance)}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Charts & Tables */}
       <Tabs defaultValue="loans">

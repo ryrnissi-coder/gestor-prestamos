@@ -106,9 +106,11 @@ const loansRouter = router({
       paymentFrequency: z.enum(["weekly", "biweekly", "monthly"]),
       termPeriods: z.number().int().positive(),
       startDate: z.string(), // YYYY-MM-DD
+      insuranceAmount: z.number().min(0).optional().default(0), // Seguro fijo por cuota
       notes: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const insurance = input.insuranceAmount ?? 0;
       // 1. Crear el préstamo
       const result = await createLoan({
         userId: ctx.user.id,
@@ -120,6 +122,7 @@ const loansRouter = router({
         termPeriods: input.termPeriods,
         startDate: input.startDate,
         status: "active",
+        insuranceAmount: insurance.toString(),
         notes: input.notes,
         disbursedAt: new Date(),
       } as any);
@@ -134,6 +137,7 @@ const loansRouter = router({
         paymentFrequency: input.paymentFrequency,
         termPeriods: input.termPeriods,
         startDate: input.startDate,
+        insuranceAmount: insurance,
       });
 
       const rows = schedule.map((row) => ({
@@ -142,6 +146,7 @@ const loansRouter = router({
         dueDate: row.dueDate,
         principalAmount: row.principalAmount.toString(),
         interestAmount: row.interestAmount.toString(),
+        insuranceAmount: row.insuranceAmount.toString(),
         totalPayment: row.totalPayment.toString(),
         remainingBalance: row.remainingBalance.toString(),
         isPaid: false,

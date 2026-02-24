@@ -56,6 +56,7 @@ export const loans = mysqlTable("loans", {
   termPeriods: int("termPeriods").notNull(),                               // Número de cuotas
   startDate: date("startDate").notNull(),
   status: mysqlEnum("status", ["active", "paid", "overdue", "cancelled"]).notNull().default("active"),
+  insuranceAmount: decimal("insuranceAmount", { precision: 15, scale: 2 }).default("0.00").notNull(), // Seguro fijo por cuota
   notes: text("notes"),
   disbursedAt: timestamp("disbursedAt").defaultNow().notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -75,6 +76,7 @@ export const amortizationSchedule = mysqlTable("amortization_schedule", {
   interestAmount: decimal("interestAmount", { precision: 15, scale: 2 }).notNull(),   // Interés de la cuota
   totalPayment: decimal("totalPayment", { precision: 15, scale: 2 }).notNull(),       // Cuota total
   remainingBalance: decimal("remainingBalance", { precision: 15, scale: 2 }).notNull(), // Saldo pendiente
+  insuranceAmount: decimal("insuranceAmount", { precision: 15, scale: 2 }).default("0.00").notNull(), // Seguro fijo por cuota
   isPaid: boolean("isPaid").default(false).notNull(),
   paidAt: timestamp("paidAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

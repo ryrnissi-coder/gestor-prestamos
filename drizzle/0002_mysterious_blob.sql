@@ -1,0 +1,2 @@
+ALTER TABLE `amortization_schedule` ADD `insuranceAmount` decimal(15,2) DEFAULT '0.00' NOT NULL;--> statement-breakpoint
+ALTER TABLE `loans` ADD `insuranceAmount` decimal(15,2) DEFAULT '0.00' NOT NULL;

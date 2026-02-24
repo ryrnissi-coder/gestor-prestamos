@@ -61,3 +61,12 @@
 
 ## Mejoras - Moneda
 - [x] Cambiar moneda a Colón costarricense (₡) en formatCurrency y toda la app
+
+## Mejoras - Seguro por Cuota
+- [x] Agregar campo insuranceAmount (monto fijo) en tabla loans del schema DB
+- [x] Agregar campo insuranceAmount en tabla schedule_items
+- [x] Actualizar lógica de amortización para incluir seguro en cada cuota
+- [x] Actualizar formulario Nuevo Préstamo con campo seguro opcional
+- [x] Actualizar tabla de amortización en LoanDetail para mostrar columna seguro
+- [x] Actualizar reportes con desglose de seguro vs capital vs interés
+- [x] Migrar base de datos con pnpm db:push

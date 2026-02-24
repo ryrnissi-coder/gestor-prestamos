@@ -15,6 +15,13 @@
       "when": 1771892565833,
       "tag": "0001_light_runaways",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1771898129845,
+      "tag": "0002_mysterious_blob",
+      "breakpoints": true
     }
   ]
 }

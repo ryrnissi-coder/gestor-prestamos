@@ -43,6 +43,7 @@ import {
   Calendar,
   Percent,
   User,
+  ShieldCheck,
 } from "lucide-react";
 
 const statusColors: Record<string, string> = {
@@ -227,6 +228,12 @@ export default function LoanDetail() {
               <Banknote className="h-3 w-3" /> Capital
             </p>
             <p className="text-xl font-bold text-foreground">{formatCurrency(loan.amount)}</p>
+            {parseFloat(loan.insuranceAmount as string) > 0 && (
+              <p className="text-xs text-blue-600 mt-0.5 flex items-center gap-1">
+                <ShieldCheck className="h-3 w-3" />
+                Seguro: {formatCurrency(loan.insuranceAmount)} / cuota
+              </p>
+            )}
           </CardContent>
         </Card>
         <Card className="border border-border shadow-sm">
@@ -308,6 +315,7 @@ export default function LoanDetail() {
                     <th className="text-left px-3 py-2.5 font-medium text-muted-foreground">Vencimiento</th>
                     <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Capital</th>
                     <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Interés</th>
+                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground hidden lg:table-cell">Seguro</th>
                     <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Cuota</th>
                     <th className="text-right px-3 py-2.5 font-medium text-muted-foreground hidden md:table-cell">Saldo</th>
                     <th className="text-center px-3 py-2.5 font-medium text-muted-foreground">Estado</th>
@@ -345,6 +353,9 @@ export default function LoanDetail() {
                         </td>
                         <td className="px-3 py-2.5 text-right text-xs">{formatCurrency(row.principalAmount)}</td>
                         <td className="px-3 py-2.5 text-right text-xs text-destructive">{formatCurrency(row.interestAmount)}</td>
+                        <td className="px-3 py-2.5 text-right text-xs text-blue-600 hidden lg:table-cell">
+                          {parseFloat(row.insuranceAmount as string) > 0 ? formatCurrency(row.insuranceAmount) : <span className="text-muted-foreground">-</span>}
+                        </td>
                         <td className="px-3 py-2.5 text-right text-xs font-semibold">{formatCurrency(row.totalPayment)}</td>
                         <td className="px-3 py-2.5 text-right text-xs hidden md:table-cell text-muted-foreground">{formatCurrency(row.remainingBalance)}</td>
                         <td className="px-3 py-2.5 text-center">

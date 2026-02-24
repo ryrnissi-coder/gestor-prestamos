@@ -12,7 +12,8 @@ export interface AmortizationRow {
   dueDate: string; // YYYY-MM-DD
   principalAmount: number;
   interestAmount: number;
-  totalPayment: number;
+  insuranceAmount: number; // Seguro fijo por cuota
+  totalPayment: number;   // capital + interés + seguro
   remainingBalance: number;
 }
 
@@ -69,19 +70,19 @@ function generateSimpleAmortization(
   ratePerPeriod: number,
   termPeriods: number,
   startDate: string,
-  frequency: PaymentFrequency
+  frequency: PaymentFrequency,
+  insurancePerPeriod: number
 ): AmortizationRow[] {
   const rows: AmortizationRow[] = [];
   const principalPerPeriod = amount / termPeriods;
   const interestPerPeriod = amount * (ratePerPeriod / 100);
-  const totalPerPeriod = principalPerPeriod + interestPerPeriod;
 
   let remainingBalance = amount;
 
   for (let i = 1; i <= termPeriods; i++) {
     const principal = i < termPeriods ? principalPerPeriod : remainingBalance;
     const interest = interestPerPeriod;
-    const total = principal + interest;
+    const total = principal + interest + insurancePerPeriod;
     remainingBalance = Math.max(0, remainingBalance - principal);
 
     rows.push({
@@ -89,6 +90,7 @@ function generateSimpleAmortization(
       dueDate: getDueDate(startDate, i, frequency),
       principalAmount: round2(principal),
       interestAmount: round2(interest),
+      insuranceAmount: round2(insurancePerPeriod),
       totalPayment: round2(total),
       remainingBalance: round2(remainingBalance),
     });
@@ -109,7 +111,8 @@ function generateCompoundAmortization(
   ratePerPeriod: number,
   termPeriods: number,
   startDate: string,
-  frequency: PaymentFrequency
+  frequency: PaymentFrequency,
+  insurancePerPeriod: number
 ): AmortizationRow[] {
   const rows: AmortizationRow[] = [];
   const r = ratePerPeriod / 100;
@@ -136,7 +139,8 @@ function generateCompoundAmortization(
       dueDate: getDueDate(startDate, i, frequency),
       principalAmount: round2(principal),
       interestAmount: round2(interest),
-      totalPayment: round2(principal + interest),
+      insuranceAmount: round2(insurancePerPeriod),
+      totalPayment: round2(principal + interest + insurancePerPeriod),
       remainingBalance: round2(remainingBalance),
     });
   }
@@ -157,11 +161,12 @@ export function generateAmortizationSchedule(params: {
   paymentFrequency: PaymentFrequency;
   termPeriods: number;
   startDate: string;          // YYYY-MM-DD
+  insuranceAmount?: number;   // monto fijo de seguro por cuota (opcional)
 }): AmortizationRow[] {
-  const { amount, interestRate, interestType, paymentFrequency, termPeriods, startDate } = params;
+  const { amount, interestRate, interestType, paymentFrequency, termPeriods, startDate, insuranceAmount = 0 } = params;
 
   if (interestType === "simple") {
-    return generateSimpleAmortization(amount, interestRate, termPeriods, startDate, paymentFrequency);
+    return generateSimpleAmortization(amount, interestRate, termPeriods, startDate, paymentFrequency, insuranceAmount);
   }
-  return generateCompoundAmortization(amount, interestRate, termPeriods, startDate, paymentFrequency);
+  return generateCompoundAmortization(amount, interestRate, termPeriods, startDate, paymentFrequency, insuranceAmount);
 }

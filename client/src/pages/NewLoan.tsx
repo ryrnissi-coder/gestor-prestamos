@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -15,29 +16,32 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { ArrowLeft, Calculator, Banknote } from "lucide-react";
+import { ArrowLeft, Calculator, Banknote, ShieldCheck } from "lucide-react";
 
 function generatePreview(
   amount: number,
   rate: number,
   type: string,
-  periods: number
-): { totalInterest: number; totalPayment: number; firstPayment: number } {
-  if (!amount || !rate || !periods) return { totalInterest: 0, totalPayment: 0, firstPayment: 0 };
+  periods: number,
+  insurance: number
+): { totalInterest: number; totalPayment: number; firstPayment: number; totalInsurance: number } {
+  if (!amount || !periods) return { totalInterest: 0, totalPayment: 0, firstPayment: 0, totalInsurance: 0 };
   const r = rate / 100;
+  const totalInsurance = insurance * periods;
   if (type === "simple") {
     const totalInterest = amount * r * periods;
-    const totalPayment = amount + totalInterest;
-    const firstPayment = amount / periods + amount * r;
-    return { totalInterest, totalPayment, firstPayment };
+    const totalPayment = amount + totalInterest + totalInsurance;
+    const firstPayment = amount / periods + amount * r + insurance;
+    return { totalInterest, totalPayment, firstPayment, totalInsurance };
   } else {
     if (r === 0) {
-      return { totalInterest: 0, totalPayment: amount, firstPayment: amount / periods };
+      const firstPayment = amount / periods + insurance;
+      return { totalInterest: 0, totalPayment: amount + totalInsurance, firstPayment, totalInsurance };
     }
     const pmt = (amount * r * Math.pow(1 + r, periods)) / (Math.pow(1 + r, periods) - 1);
-    const totalPayment = pmt * periods;
-    const totalInterest = totalPayment - amount;
-    return { totalInterest, totalPayment, firstPayment: pmt };
+    const totalPayment = pmt * periods + totalInsurance;
+    const totalInterest = pmt * periods - amount;
+    return { totalInterest, totalPayment, firstPayment: pmt + insurance, totalInsurance };
   }
 }
 
@@ -55,6 +59,8 @@ export default function NewLoan() {
     paymentFrequency: "monthly",
     termPeriods: "",
     startDate: today,
+    insuranceAmount: "",
+    hasInsurance: false,
     notes: "",
   });
 
@@ -63,9 +69,10 @@ export default function NewLoan() {
       parseFloat(form.amount) || 0,
       parseFloat(form.interestRate) || 0,
       form.interestType,
-      parseInt(form.termPeriods) || 0
+      parseInt(form.termPeriods) || 0,
+      form.hasInsurance ? (parseFloat(form.insuranceAmount) || 0) : 0
     );
-  }, [form.amount, form.interestRate, form.interestType, form.termPeriods]);
+  }, [form.amount, form.interestRate, form.interestType, form.termPeriods, form.insuranceAmount, form.hasInsurance]);
 
   const createMutation = trpc.loans.create.useMutation({
     onSuccess: (data) => {
@@ -86,6 +93,7 @@ export default function NewLoan() {
       paymentFrequency: form.paymentFrequency as "weekly" | "biweekly" | "monthly",
       termPeriods: parseInt(form.termPeriods),
       startDate: form.startDate,
+      insuranceAmount: form.hasInsurance ? (parseFloat(form.insuranceAmount) || 0) : 0,
       notes: form.notes || undefined,
     });
   }
@@ -146,7 +154,7 @@ export default function NewLoan() {
                       value={form.amount}
                       onChange={(e) => setForm({ ...form, amount: e.target.value })}
                       required
-                      placeholder="1000.00"
+                      placeholder="100000.00"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -221,6 +229,41 @@ export default function NewLoan() {
                   </div>
                 </div>
 
+                {/* Seguro */}
+                <div className="rounded-lg border border-border p-3 space-y-3 bg-muted/30">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="h-4 w-4 text-primary" />
+                      <Label htmlFor="hasInsurance" className="cursor-pointer font-medium">
+                        Incluir Seguro por Cuota
+                      </Label>
+                    </div>
+                    <Switch
+                      id="hasInsurance"
+                      checked={form.hasInsurance}
+                      onCheckedChange={(v) => setForm({ ...form, hasInsurance: v, insuranceAmount: v ? form.insuranceAmount : "" })}
+                    />
+                  </div>
+                  {form.hasInsurance && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="insurance">Monto de Seguro por Cuota (₡) *</Label>
+                      <Input
+                        id="insurance"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={form.insuranceAmount}
+                        onChange={(e) => setForm({ ...form, insuranceAmount: e.target.value })}
+                        required={form.hasInsurance}
+                        placeholder="2000.00"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Monto fijo que se suma a cada cuota. Se registra por separado del capital e interés.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
                 {/* Notas */}
                 <div className="space-y-1.5">
                   <Label htmlFor="notes">Notas</Label>
@@ -268,6 +311,14 @@ export default function NewLoan() {
                       <span className="text-muted-foreground">Total Interés</span>
                       <span className="font-medium text-destructive">{formatCurrency(preview.totalInterest)}</span>
                     </div>
+                    {form.hasInsurance && preview.totalInsurance > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <ShieldCheck className="h-3 w-3" /> Total Seguro
+                        </span>
+                        <span className="font-medium text-blue-600">{formatCurrency(preview.totalInsurance)}</span>
+                      </div>
+                    )}
                     <div className="border-t pt-2 flex justify-between text-sm">
                       <span className="font-semibold">Total a Pagar</span>
                       <span className="font-bold text-foreground">{formatCurrency(preview.totalPayment)}</span>
@@ -276,6 +327,11 @@ export default function NewLoan() {
                   <div className="bg-primary/5 rounded-lg p-3 border border-primary/10">
                     <p className="text-xs text-muted-foreground mb-1">Primera cuota aprox.</p>
                     <p className="text-xl font-bold text-primary">{formatCurrency(preview.firstPayment)}</p>
+                    {form.hasInsurance && preview.totalInsurance > 0 && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Incluye ₡{parseFloat(form.insuranceAmount) || 0} de seguro
+                      </p>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
                     {form.termPeriods || 0} cuotas ·{" "}
