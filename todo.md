@@ -58,3 +58,6 @@
 - [x] Botón "Enviar recordatorio WhatsApp" en cuotas próximas a vencer del dashboard
 - [x] Botón WhatsApp en perfil del cliente
 - [x] Mensaje pre-escrito con nombre, tipo de cuota y texto estándar
+
+## Mejoras - Moneda
+- [x] Cambiar moneda a Colón costarricense (₡) en formatCurrency y toda la app

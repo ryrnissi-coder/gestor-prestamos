@@ -7,24 +7,25 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(amount: number | string): string {
   const num = typeof amount === "string" ? parseFloat(amount) : amount;
-  if (isNaN(num)) return "$0.00";
-  return new Intl.NumberFormat("es-SV", {
+  if (isNaN(num)) return "₡0,00";
+  return new Intl.NumberFormat("es-CR", {
     style: "currency",
-    currency: "USD",
+    currency: "CRC",
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(num);
 }
 
 export function formatDate(dateStr: string | Date | null | undefined): string {
   if (!dateStr) return "-";
   const d = typeof dateStr === "string" ? new Date(dateStr + "T00:00:00") : dateStr;
-  return d.toLocaleDateString("es-SV", { day: "2-digit", month: "short", year: "numeric" });
+  return d.toLocaleDateString("es-CR", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function formatDateFull(dateStr: string | Date | null | undefined): string {
   if (!dateStr) return "-";
   const d = typeof dateStr === "string" ? new Date(dateStr + "T00:00:00") : dateStr;
-  return d.toLocaleDateString("es-SV", { day: "2-digit", month: "long", year: "numeric" });
+  return d.toLocaleDateString("es-CR", { day: "2-digit", month: "long", year: "numeric" });
 }
 
 export function isOverdue(dueDateStr: string): boolean {
