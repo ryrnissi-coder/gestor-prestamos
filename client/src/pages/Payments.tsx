@@ -246,7 +246,7 @@ export default function Payments() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Monto ($) *</Label>
+                <Label>Monto (₡) *</Label>
                 <Input
                   type="number"
                   min="0.01"

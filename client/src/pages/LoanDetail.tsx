@@ -456,7 +456,7 @@ export default function LoanDetail() {
           <form onSubmit={handlePaymentSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="pAmount">Monto ($) *</Label>
+                <Label htmlFor="pAmount">Monto (₡) *</Label>
                 <Input
                   id="pAmount"
                   type="number"

@@ -137,7 +137,7 @@ export default function NewLoan() {
                 {/* Monto y Tasa */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label htmlFor="amount">Monto ($) *</Label>
+                    <Label htmlFor="amount">Monto (₡) *</Label>
                     <Input
                       id="amount"
                       type="number"
