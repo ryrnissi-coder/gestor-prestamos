@@ -111,9 +111,10 @@ const loansRouter = router({
       notes: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const insurance = input.insuranceAmount ?? 0;
-      // 1. Crear el préstamo
-      const result = await createLoan({
+      try {
+        const insurance = input.insuranceAmount ?? 0;
+        // 1. Crear el préstamo
+        const result = await createLoan({
         userId: ctx.user.id,
         borrowerId: input.borrowerId,
         amount: input.amount.toString(),
@@ -144,7 +145,7 @@ const loansRouter = router({
       const rows = schedule.map((row) => ({
         loanId,
         periodNumber: row.periodNumber,
-        dueDate: row.dueDate,
+        dueDate: new Date(row.dueDate + "T00:00:00Z"),
         principalAmount: row.principalAmount.toString(),
         interestAmount: row.interestAmount.toString(),
         insuranceAmount: row.insuranceAmount.toString(),
@@ -153,8 +154,14 @@ const loansRouter = router({
         isPaid: false,
       }));
 
+      console.log("[loans.create] Inserting", rows.length, "schedule rows for loan", loanId);
       await createAmortizationSchedule(rows as any);
+      console.log("[loans.create] Successfully created loan", loanId);
       return { success: true, loanId };
+      } catch (error) {
+        console.error("[loans.create] Error:", error);
+        throw error;
+      }
     }),
 
   updateStatus: protectedProcedure
