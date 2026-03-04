@@ -337,18 +337,18 @@ export default function LoanDetail() {
         <TabsContent value="schedule" className="mt-4">
           <Card className="border border-border shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b bg-muted/40">
-                    <th className="text-center px-3 py-2.5 font-medium text-muted-foreground w-12">#</th>
-                    <th className="text-left px-3 py-2.5 font-medium text-muted-foreground">Vencimiento</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Capital</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Interés</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground hidden lg:table-cell">Seguro</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground">Cuota</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-muted-foreground hidden md:table-cell">Saldo</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-muted-foreground">Estado</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-muted-foreground">Acción</th>
+                  <tr className="border-b bg-muted/40 sticky top-0">
+                    <th className="text-center px-2 py-2 font-medium text-muted-foreground w-8">#</th>
+                    <th className="text-left px-2 py-2 font-medium text-muted-foreground min-w-[90px]">Vencimiento</th>
+                    <th className="text-right px-2 py-2 font-medium text-muted-foreground min-w-[75px]">Capital</th>
+                    <th className="text-right px-2 py-2 font-medium text-muted-foreground min-w-[75px]">Interés</th>
+                    <th className="text-right px-2 py-2 font-medium text-muted-foreground hidden lg:table-cell min-w-[75px]">Seguro</th>
+                    <th className="text-right px-2 py-2 font-medium text-muted-foreground min-w-[85px]">Cuota</th>
+                    <th className="text-right px-2 py-2 font-medium text-muted-foreground hidden md:table-cell min-w-[85px]">Saldo</th>
+                    <th className="text-center px-2 py-2 font-medium text-muted-foreground w-8">Estado</th>
+                    <th className="text-center px-2 py-2 font-medium text-muted-foreground min-w-[65px]">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -373,21 +373,21 @@ export default function LoanDetail() {
                             : "hover:bg-muted/20"
                         }`}
                       >
-                        <td className="px-3 py-2.5 text-center text-muted-foreground text-xs">{row.periodNumber}</td>
-                        <td className="px-3 py-2.5">
-                          <span className={`text-xs ${overdue ? "text-destructive font-medium" : "text-foreground"}`}>
+                        <td className="px-2 py-2 text-center text-muted-foreground font-medium">{row.periodNumber}</td>
+                        <td className="px-2 py-2 whitespace-nowrap">
+                          <span className={`${overdue ? "text-destructive font-medium" : "text-foreground"}`}>
                             {formatDate(row.dueDate as unknown as string)}
                           </span>
                           {overdue && <AlertTriangle className="h-3 w-3 text-destructive inline ml-1" />}
                         </td>
-                        <td className="px-3 py-2.5 text-right text-xs">{formatCurrency(row.principalAmount)}</td>
-                        <td className="px-3 py-2.5 text-right text-xs text-destructive">{formatCurrency(row.interestAmount)}</td>
-                        <td className="px-3 py-2.5 text-right text-xs text-blue-600 hidden lg:table-cell">
+                        <td className="px-2 py-2 text-right font-mono text-xs">{formatCurrency(row.principalAmount)}</td>
+                        <td className="px-2 py-2 text-right font-mono text-xs text-destructive">{formatCurrency(row.interestAmount)}</td>
+                        <td className="px-2 py-2 text-right font-mono text-xs text-blue-600 hidden lg:table-cell">
                           {parseFloat(row.insuranceAmount as string) > 0 ? formatCurrency(row.insuranceAmount) : <span className="text-muted-foreground">-</span>}
                         </td>
-                        <td className="px-3 py-2.5 text-right text-xs font-semibold">{formatCurrency(row.totalPayment)}</td>
-                        <td className="px-3 py-2.5 text-right text-xs hidden md:table-cell text-muted-foreground">{formatCurrency(row.remainingBalance)}</td>
-                        <td className="px-3 py-2.5 text-center">
+                        <td className="px-2 py-2 text-right font-mono text-xs font-semibold">{formatCurrency(row.totalPayment)}</td>
+                        <td className="px-2 py-2 text-right font-mono text-xs hidden md:table-cell text-muted-foreground">{formatCurrency(row.remainingBalance)}</td>
+                        <td className="px-2 py-2 text-center">
                           {row.isPaid ? (
                             <CheckCircle2 className="h-4 w-4 text-success mx-auto" />
                           ) : overdue ? (
@@ -396,12 +396,12 @@ export default function LoanDetail() {
                             <Circle className="h-4 w-4 text-muted-foreground mx-auto" />
                           )}
                         </td>
-                        <td className="px-3 py-2.5 text-center">
+                        <td className="px-2 py-2 text-center">
                           {row.isPaid ? (
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-7 text-xs text-muted-foreground"
+                              className="h-6 text-xs text-muted-foreground"
                               onClick={() => markUnpaidMutation.mutate({ scheduleId: row.id })}
                             >
                               Desmarcar
@@ -410,7 +410,7 @@ export default function LoanDetail() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-7 text-xs gap-1"
+                              className="h-6 text-xs gap-0.5 px-1.5"
                               onClick={() => openPaymentDialog(row.id, row.totalPayment as string)}
                             >
                               <Plus className="h-3 w-3" />
