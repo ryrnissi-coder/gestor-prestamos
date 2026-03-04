@@ -1,0 +1,8 @@
+{
+  "query": "SELECT l.id, l.amount, l.interestRate, l.numberOfPayments, l.paymentFrequency, l.interestType, l.startDate, l.insuranceAmount\nFROM loans l \nLEFT JOIN amortization_schedule a ON l.id = a.loanId \nGROUP BY l.id \nHAVING COUNT(a.id) = 0;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT l.id, l.amount, l.interestRate, l.numberOfPayments, l.paymentFrequency, l.interestType, l.startDate, l.insuranceAmount\nFROM loans l \nLEFT JOIN amortization_schedule a ON l.id = a.loanId \nGROUP BY l.id \nHAVING COUNT(a.id) = 0;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'l.numberofpayments' in 'field list'"
+  ]
+}

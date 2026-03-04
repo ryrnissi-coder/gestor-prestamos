@@ -1,0 +1,90 @@
+{
+  "query": "SELECT periodNumber, dueDate, principalAmount, interestAmount, insuranceAmount, totalPayment FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT periodNumber, dueDate, principalAmount, interestAmount, insuranceAmount, totalPayment FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber;",
+  "rows": [
+    {
+      "periodNumber": "1",
+      "dueDate": "2025-10-21",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "2",
+      "dueDate": "2025-10-28",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "3",
+      "dueDate": "2025-11-04",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "4",
+      "dueDate": "2025-11-11",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "5",
+      "dueDate": "2025-11-18",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "6",
+      "dueDate": "2025-11-25",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "7",
+      "dueDate": "2025-12-02",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "8",
+      "dueDate": "2025-12-09",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "9",
+      "dueDate": "2025-12-16",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    },
+    {
+      "periodNumber": "10",
+      "dueDate": "2025-12-23",
+      "principalAmount": "55000.00",
+      "interestAmount": "27500.00",
+      "insuranceAmount": "0.00",
+      "totalPayment": "82500.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "periodNumber\tdueDate\tprincipalAmount\tinterestAmount\tinsuranceAmount\ttotalPayment\n1\t2025-10-21\t55000.00\t27500.00\t0.00\t82500.00\n2\t2025-10-28\t55000.00\t27500.00\t0.00\t82500.00\n3\t2025-11-04\t55000.00\t27500.00\t0.00\t82500.00\n4\t2025-11-11\t55000.00\t27500.00\t0.00\t82500.00\n5\t2025-11-18\t55000.00\t27500.00\t0.00\t82500.00\n6\t2025-11-25\t55000.00\t27500.00\t0.00\t82500.00\n7\t2025-12-02\t55000.00\t27500.00\t0.00\t82500.00\n8\t2025-12-09\t55000.00\t27500.00\t0.00\t82500.00\n9\t2025-12-16\t55000.00\t27500.00\t0.00\t82500.00\n10\t2025-12-23\t55000.00\t27500.00\t0.00\t82500.00\n",
+  "stderr": "",
+  "execution_time_ms": 77
+}

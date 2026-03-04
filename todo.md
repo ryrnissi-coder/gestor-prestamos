@@ -77,5 +77,6 @@
 - [x] Botón eliminar préstamo con confirmación
 - [x] Botón eliminar cliente con confirmación
 - [ ] Botón eliminar pago con confirmación
-- [ ] Investigar y corregir tabla de amortización que no genera
+- [x] Corregir pagos de Xinia Soza: ₡55,000 debe ser SOLO capital, sin interés/seguro
+- [x] Tabla de amortización no se despliega en todos los préstamos
 - [ ] Agregar avisos de vencimiento por WhatsApp al número 70460451
