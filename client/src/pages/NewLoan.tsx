@@ -24,24 +24,31 @@ function generatePreview(
   type: string,
   periods: number,
   insurance: number
-): { totalInterest: number; totalPayment: number; firstPayment: number; totalInsurance: number } {
-  if (!amount || !periods) return { totalInterest: 0, totalPayment: 0, firstPayment: 0, totalInsurance: 0 };
+): { totalInterest: number; totalPayment: number; firstPayment: number; totalInsurance: number; capitalPerPeriod: number } {
+  if (!amount || !periods) return { totalInterest: 0, totalPayment: 0, firstPayment: 0, totalInsurance: 0, capitalPerPeriod: 0 };
   const r = rate / 100;
   const totalInsurance = insurance * periods;
+  
   if (type === "simple") {
-    const totalInterest = amount * r * periods;
+    // Interés simple: interés fijo en cada período
+    const capitalPerPeriod = amount / periods;
+    const interestPerPeriod = amount * r;
+    const firstPayment = capitalPerPeriod + interestPerPeriod + insurance;
+    const totalInterest = interestPerPeriod * periods;
     const totalPayment = amount + totalInterest + totalInsurance;
-    const firstPayment = amount / periods + amount * r + insurance;
-    return { totalInterest, totalPayment, firstPayment, totalInsurance };
+    return { totalInterest, totalPayment, firstPayment, totalInsurance, capitalPerPeriod };
   } else {
+    // Interés compuesto (sistema francés): cuota fija
     if (r === 0) {
-      const firstPayment = amount / periods + insurance;
-      return { totalInterest: 0, totalPayment: amount + totalInsurance, firstPayment, totalInsurance };
+      const capitalPerPeriod = amount / periods;
+      const firstPayment = capitalPerPeriod + insurance;
+      return { totalInterest: 0, totalPayment: amount + totalInsurance, firstPayment, totalInsurance, capitalPerPeriod };
     }
     const pmt = (amount * r * Math.pow(1 + r, periods)) / (Math.pow(1 + r, periods) - 1);
     const totalPayment = pmt * periods + totalInsurance;
     const totalInterest = pmt * periods - amount;
-    return { totalInterest, totalPayment, firstPayment: pmt + insurance, totalInsurance };
+    const capitalPerPeriod = pmt; // Aproximado
+    return { totalInterest, totalPayment, firstPayment: pmt + insurance, totalInsurance, capitalPerPeriod };
   }
 }
 
@@ -325,13 +332,24 @@ export default function NewLoan() {
                     </div>
                   </div>
                   <div className="bg-primary/5 rounded-lg p-3 border border-primary/10">
-                    <p className="text-xs text-muted-foreground mb-1">Primera cuota aprox.</p>
+                    <p className="text-xs text-muted-foreground mb-2">Cuota a pagar (cada período)</p>
                     <p className="text-xl font-bold text-primary">{formatCurrency(preview.firstPayment)}</p>
-                    {form.hasInsurance && preview.totalInsurance > 0 && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Incluye ₡{parseFloat(form.insuranceAmount) || 0} de seguro
-                      </p>
-                    )}
+                    <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                      <div className="flex justify-between">
+                        <span>Capital:</span>
+                        <span>{formatCurrency(preview.capitalPerPeriod)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Interés:</span>
+                        <span>{formatCurrency(preview.firstPayment - preview.capitalPerPeriod - (form.hasInsurance ? parseFloat(form.insuranceAmount) || 0 : 0))}</span>
+                      </div>
+                      {form.hasInsurance && preview.totalInsurance > 0 && (
+                        <div className="flex justify-between">
+                          <span>Seguro:</span>
+                          <span>{formatCurrency(parseFloat(form.insuranceAmount) || 0)}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
                     {form.termPeriods || 0} cuotas ·{" "}

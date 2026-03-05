@@ -93,3 +93,7 @@
 - [ ] Dashboard cliente: ver solo su préstamo
 - [ ] Perfil cliente: editar teléfono, email, dirección (solo lectura del préstamo)
 - [ ] Proteger rutas: clientes no pueden ver otros préstamos
+
+## Correcciones - Cálculo de cuotas
+- [x] Mostrar cuota final (capital + interés + seguro) en tiempo real en formulario de creación
+- [x] Validar que la cuota mostrada en creación coincida con la tabla de amortización
