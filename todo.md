@@ -97,3 +97,7 @@
 ## Correcciones - Cálculo de cuotas
 - [x] Mostrar cuota final (capital + interés + seguro) en tiempo real en formulario de creación
 - [x] Validar que la cuota mostrada en creación coincida con la tabla de amortización
+
+## Correcciones - Préstamos existentes
+- [x] Recalcular tablas de amortización de todos los préstamos existentes
+- [x] Validar que cada cuota sea el total a pagar (sin sumar componentes)

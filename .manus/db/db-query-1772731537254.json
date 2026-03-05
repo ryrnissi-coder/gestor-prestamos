@@ -1,0 +1,60 @@
+{
+  "query": "SELECT id, amount, interestRate, interestType, paymentFrequency, termPeriods, startDate, insuranceAmount FROM loans ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, amount, interestRate, interestType, paymentFrequency, termPeriods, startDate, insuranceAmount FROM loans ORDER BY id;",
+  "rows": [
+    {
+      "id": "1",
+      "amount": "2976000.00",
+      "interestRate": "3.0900",
+      "interestType": "compound",
+      "paymentFrequency": "biweekly",
+      "termPeriods": "38",
+      "startDate": "2026-01-28",
+      "insuranceAmount": "16000.00"
+    },
+    {
+      "id": "30002",
+      "amount": "600000.00",
+      "interestRate": "0.9500",
+      "interestType": "simple",
+      "paymentFrequency": "weekly",
+      "termPeriods": "31",
+      "startDate": "2026-02-24",
+      "insuranceAmount": "0.00"
+    },
+    {
+      "id": "60001",
+      "amount": "100000.00",
+      "interestRate": "2.5000",
+      "interestType": "simple",
+      "paymentFrequency": "weekly",
+      "termPeriods": "8",
+      "startDate": "2026-02-20",
+      "insuranceAmount": "0.00"
+    },
+    {
+      "id": "90001",
+      "amount": "1900000.00",
+      "interestRate": "1.1900",
+      "interestType": "simple",
+      "paymentFrequency": "weekly",
+      "termPeriods": "78",
+      "startDate": "2025-10-15",
+      "insuranceAmount": "8000.00"
+    },
+    {
+      "id": "120001",
+      "amount": "200000.00",
+      "interestRate": "1.7000",
+      "interestType": "simple",
+      "paymentFrequency": "weekly",
+      "termPeriods": "12",
+      "startDate": "2026-02-28",
+      "insuranceAmount": "0.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tamount\tinterestRate\tinterestType\tpaymentFrequency\ttermPeriods\tstartDate\tinsuranceAmount\n1\t2976000.00\t3.0900\tcompound\tbiweekly\t38\t2026-01-28\t16000.00\n30002\t600000.00\t0.9500\tsimple\tweekly\t31\t2026-02-24\t0.00\n60001\t100000.00\t2.5000\tsimple\tweekly\t8\t2026-02-20\t0.00\n90001\t1900000.00\t1.1900\tsimple\tweekly\t78\t2025-10-15\t8000.00\n120001\t200000.00\t1.7000\tsimple\tweekly\t12\t2026-02-28\t0.00\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}
