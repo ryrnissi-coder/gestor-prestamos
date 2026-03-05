@@ -77,10 +77,10 @@ export const amortizationSchedule = mysqlTable("amortization_schedule", {
   loanId: int("loanId").notNull(),
   periodNumber: int("periodNumber").notNull(),   // Número de cuota
   dueDate: date("dueDate").notNull(),            // Fecha de vencimiento
-  principalAmount: decimal("principalAmount", { precision: 15, scale: 2 }).notNull(), // Capital de la cuota
-  interestAmount: decimal("interestAmount", { precision: 15, scale: 2 }).notNull(),   // Interés de la cuota
-  totalPayment: decimal("totalPayment", { precision: 15, scale: 2 }).notNull(),       // Cuota total
-  remainingBalance: decimal("remainingBalance", { precision: 15, scale: 2 }).notNull(), // Saldo pendiente
+  principalAmount: decimal("principalAmount", { precision: 15, scale: 2 }).default("0.00").notNull(), // Capital de la cuota
+  interestAmount: decimal("interestAmount", { precision: 15, scale: 2 }).default("0.00").notNull(),   // Interés de la cuota
+  totalPayment: decimal("totalPayment", { precision: 15, scale: 2 }).default("0.00").notNull(),       // Cuota total
+  remainingBalance: decimal("remainingBalance", { precision: 15, scale: 2 }).default("0.00").notNull(), // Saldo pendiente
   insuranceAmount: decimal("insuranceAmount", { precision: 15, scale: 2 }).default("0.00").notNull(), // Seguro fijo por cuota
   isPaid: boolean("isPaid").default(false).notNull(),
   paidAt: timestamp("paidAt"),

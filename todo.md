@@ -101,3 +101,6 @@
 ## Correcciones - Préstamos existentes
 - [x] Recalcular tablas de amortización de todos los préstamos existentes
 - [x] Validar que cada cuota sea el total a pagar (sin sumar componentes)
+
+## Bugs - Creación de préstamos
+- [x] Error al crear préstamo: falla inserción en amortization_schedule con valores por defecto
