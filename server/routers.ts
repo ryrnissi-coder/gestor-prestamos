@@ -202,7 +202,11 @@ const loansRouter = router({
   update: protectedProcedure
     .input(z.object({
       id: z.number(),
+      amount: z.number().positive().optional(),
       interestRate: z.number().min(0).optional(),
+      interestType: z.enum(["simple", "compound"]).optional(),
+      paymentFrequency: z.enum(["weekly", "biweekly", "monthly"]).optional(),
+      startDate: z.string().optional(),
       insuranceAmount: z.number().min(0).optional(),
       termPeriods: z.number().int().positive().optional(),
       notes: z.string().optional(),
@@ -213,7 +217,11 @@ const loansRouter = router({
         
         // Actualizar el prestamo
         const updateSet: Record<string, any> = {};
+        if (updates.amount !== undefined) updateSet.amount = updates.amount.toString();
         if (updates.interestRate !== undefined) updateSet.interestRate = updates.interestRate.toString();
+        if (updates.interestType !== undefined) updateSet.interestType = updates.interestType;
+        if (updates.paymentFrequency !== undefined) updateSet.paymentFrequency = updates.paymentFrequency;
+        if (updates.startDate !== undefined) updateSet.startDate = new Date(updates.startDate);
         if (updates.insuranceAmount !== undefined) updateSet.insuranceAmount = updates.insuranceAmount.toString();
         if (updates.termPeriods !== undefined) updateSet.termPeriods = updates.termPeriods;
         if (updates.notes !== undefined) updateSet.notes = updates.notes;
@@ -221,8 +229,10 @@ const loansRouter = router({
 
         await updateLoan(id, ctx.user.id, updateSet);
 
-        // Si se cambio la tasa de interes, seguro o plazo, regenerar tabla de amortizacion
-        if (updates.interestRate !== undefined || updates.insuranceAmount !== undefined || updates.termPeriods !== undefined) {
+        // Si se cambio cualquier parámetro que afecte la amortización, regenerar tabla
+        if (updates.amount !== undefined || updates.interestRate !== undefined || updates.interestType !== undefined || 
+            updates.paymentFrequency !== undefined || updates.startDate !== undefined || 
+            updates.insuranceAmount !== undefined || updates.termPeriods !== undefined) {
           // Obtener el prestamo actualizado
           const loan = await getLoanById(id, ctx.user.id);
           if (!loan) throw new TRPCError({ code: "NOT_FOUND" });
@@ -231,17 +241,21 @@ const loansRouter = router({
           await deleteAmortizationSchedule(id);
 
           // Generar nueva tabla de amortizacion
+          const newAmount = updates.amount ?? parseFloat(loan.amount);
           const newTermPeriods = updates.termPeriods ?? loan.termPeriods;
           const newInterestRate = updates.interestRate ?? parseFloat(loan.interestRate);
+          const newInterestType = updates.interestType ?? (loan.interestType as "simple" | "compound");
+          const newPaymentFrequency = updates.paymentFrequency ?? (loan.paymentFrequency as "weekly" | "biweekly" | "monthly");
+          const newStartDate = updates.startDate ?? (loan.startDate instanceof Date ? loan.startDate.toISOString().split('T')[0] : loan.startDate);
           const newInsuranceAmount = updates.insuranceAmount ?? parseFloat(loan.insuranceAmount || "0");
 
           const schedule = generateAmortizationSchedule({
-            amount: parseFloat(loan.amount),
+            amount: newAmount,
             interestRate: newInterestRate,
-            interestType: loan.interestType as "simple" | "compound",
-            paymentFrequency: loan.paymentFrequency as "weekly" | "biweekly" | "monthly",
+            interestType: newInterestType,
+            paymentFrequency: newPaymentFrequency,
             termPeriods: newTermPeriods,
-            startDate: loan.startDate instanceof Date ? loan.startDate.toISOString().split('T')[0] : loan.startDate,
+            startDate: newStartDate,
             insuranceAmount: newInsuranceAmount,
           });
 

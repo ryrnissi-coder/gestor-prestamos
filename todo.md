@@ -84,7 +84,8 @@
 
 ## Nuevas funcionalidades - Edición y usuarios cliente
 - [x] Botón editar préstamo en lista y detalle
-- [x] Formulario editar préstamo (tasa, seguro, plazo)
+- [x] Formulario editar préstamo - EXPANDIDO (todos los campos)
+- [x] Permitir editar: monto, tipo interés, frecuencia pago, fecha inicio, tasa, seguro, cuotas, notas
 - [x] Recalcular tabla de amortización al editar préstamo
 - [ ] Sistema de roles: admin vs cliente
 - [ ] Crear usuario para cliente desde perfil de cliente

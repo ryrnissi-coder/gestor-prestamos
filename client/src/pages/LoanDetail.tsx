@@ -74,7 +74,11 @@ export default function LoanDetail() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editForm, setEditForm] = useState({
+    amount: "",
     interestRate: "",
+    interestType: "",
+    paymentFrequency: "",
+    startDate: "",
     insuranceAmount: "",
     termPeriods: "",
     notes: "",
@@ -261,7 +265,11 @@ export default function LoanDetail() {
             className="gap-1.5"
             onClick={() => {
               setEditForm({
+                amount: parseFloat(loan.amount).toString(),
                 interestRate: parseFloat(loan.interestRate as string).toString(),
+                interestType: loan.interestType,
+                paymentFrequency: loan.paymentFrequency,
+                startDate: loan.startDate instanceof Date ? loan.startDate.toISOString().split('T')[0] : loan.startDate,
                 insuranceAmount: parseFloat(loan.insuranceAmount as string || "0").toString(),
                 termPeriods: loan.termPeriods.toString(),
                 notes: loan.notes || "",
@@ -626,12 +634,65 @@ export default function LoanDetail() {
             e.preventDefault();
             updateLoanMutation.mutate({
               id: loanId,
+              amount: editForm.amount ? parseFloat(editForm.amount) : undefined,
               interestRate: editForm.interestRate ? parseFloat(editForm.interestRate) : undefined,
+              interestType: editForm.interestType ? (editForm.interestType as "simple" | "compound") : undefined,
+              paymentFrequency: editForm.paymentFrequency ? (editForm.paymentFrequency as "weekly" | "biweekly" | "monthly") : undefined,
+              startDate: editForm.startDate || undefined,
               insuranceAmount: editForm.insuranceAmount ? parseFloat(editForm.insuranceAmount) : undefined,
               termPeriods: editForm.termPeriods ? parseInt(editForm.termPeriods) : undefined,
               notes: editForm.notes || undefined,
             });
           }} className="space-y-4">
+            <div>
+              <Label htmlFor="eAmount">Monto del Préstamo (₡)</Label>
+              <Input
+                id="eAmount"
+                type="number"
+                step="0.01"
+                value={editForm.amount}
+                onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                placeholder={parseFloat(loan.amount).toFixed(2)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Actual: {formatCurrency(loan.amount)}</p>
+            </div>
+            <div>
+              <Label htmlFor="eInterestType">Tipo de Interés</Label>
+              <Select value={editForm.interestType} onValueChange={(value) => setEditForm({ ...editForm, interestType: value })}>
+                <SelectTrigger id="eInterestType">
+                  <SelectValue placeholder="Selecciona tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="simple">Interés Simple</SelectItem>
+                  <SelectItem value="compound">Interés Compuesto</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">Actual: {getInterestTypeLabel(loan.interestType)}</p>
+            </div>
+            <div>
+              <Label htmlFor="eFrequency">Frecuencia de Pago</Label>
+              <Select value={editForm.paymentFrequency} onValueChange={(value) => setEditForm({ ...editForm, paymentFrequency: value })}>
+                <SelectTrigger id="eFrequency">
+                  <SelectValue placeholder="Selecciona frecuencia" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="weekly">Semanal</SelectItem>
+                  <SelectItem value="biweekly">Quincenal</SelectItem>
+                  <SelectItem value="monthly">Mensual</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">Actual: {getFrequencyLabel(loan.paymentFrequency)}</p>
+            </div>
+            <div>
+              <Label htmlFor="eStartDate">Fecha de Inicio</Label>
+              <Input
+                id="eStartDate"
+                type="date"
+                value={editForm.startDate}
+                onChange={(e) => setEditForm({ ...editForm, startDate: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Actual: {formatDate(loan.startDate)}</p>
+            </div>
             <div>
               <Label htmlFor="eRate">Tasa de Interés (% por período)</Label>
               <Input
