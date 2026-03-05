@@ -80,3 +80,15 @@
 - [x] Corregir pagos de Xinia Soza: ₡55,000 debe ser SOLO capital, sin interés/seguro
 - [x] Tabla de amortización no se despliega en todos los préstamos
 - [ ] Agregar avisos de vencimiento por WhatsApp al número 70460451
+
+
+## Nuevas funcionalidades - Edición y usuarios cliente
+- [x] Botón editar préstamo en lista y detalle
+- [x] Formulario editar préstamo (tasa, seguro, plazo)
+- [x] Recalcular tabla de amortización al editar préstamo
+- [ ] Sistema de roles: admin vs cliente
+- [ ] Crear usuario para cliente desde perfil de cliente
+- [ ] Página de login para clientes
+- [ ] Dashboard cliente: ver solo su préstamo
+- [ ] Perfil cliente: editar teléfono, email, dirección (solo lectura del préstamo)
+- [ ] Proteger rutas: clientes no pueden ver otros préstamos

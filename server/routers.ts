@@ -198,6 +198,74 @@ const loansRouter = router({
       await deleteLoan(input.id, ctx.user.id);
       return { success: true };
     }),
+
+  update: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      interestRate: z.number().min(0).optional(),
+      insuranceAmount: z.number().min(0).optional(),
+      termPeriods: z.number().int().positive().optional(),
+      notes: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { id, ...updates } = input;
+        
+        // Actualizar el prestamo
+        const updateSet: Record<string, any> = {};
+        if (updates.interestRate !== undefined) updateSet.interestRate = updates.interestRate.toString();
+        if (updates.insuranceAmount !== undefined) updateSet.insuranceAmount = updates.insuranceAmount.toString();
+        if (updates.termPeriods !== undefined) updateSet.termPeriods = updates.termPeriods;
+        if (updates.notes !== undefined) updateSet.notes = updates.notes;
+        updateSet.updatedAt = new Date();
+
+        await updateLoan(id, ctx.user.id, updateSet);
+
+        // Si se cambio la tasa de interes, seguro o plazo, regenerar tabla de amortizacion
+        if (updates.interestRate !== undefined || updates.insuranceAmount !== undefined || updates.termPeriods !== undefined) {
+          // Obtener el prestamo actualizado
+          const loan = await getLoanById(id, ctx.user.id);
+          if (!loan) throw new TRPCError({ code: "NOT_FOUND" });
+
+          // Eliminar tabla de amortizacion anterior
+          await deleteAmortizationSchedule(id);
+
+          // Generar nueva tabla de amortizacion
+          const newTermPeriods = updates.termPeriods ?? loan.termPeriods;
+          const newInterestRate = updates.interestRate ?? parseFloat(loan.interestRate);
+          const newInsuranceAmount = updates.insuranceAmount ?? parseFloat(loan.insuranceAmount || "0");
+
+          const schedule = generateAmortizationSchedule({
+            amount: parseFloat(loan.amount),
+            interestRate: newInterestRate,
+            interestType: loan.interestType as "simple" | "compound",
+            paymentFrequency: loan.paymentFrequency as "weekly" | "biweekly" | "monthly",
+            termPeriods: newTermPeriods,
+            startDate: loan.startDate instanceof Date ? loan.startDate.toISOString().split('T')[0] : loan.startDate,
+            insuranceAmount: newInsuranceAmount,
+          });
+
+          const rows = schedule.map((row) => ({
+            loanId: id,
+            periodNumber: row.periodNumber,
+            dueDate: new Date(row.dueDate + "T00:00:00Z"),
+            principalAmount: row.principalAmount.toString(),
+            interestAmount: row.interestAmount.toString(),
+            insuranceAmount: row.insuranceAmount.toString(),
+            totalPayment: row.totalPayment.toString(),
+            remainingBalance: row.remainingBalance.toString(),
+            isPaid: false,
+          }));
+
+          await createAmortizationSchedule(rows as any);
+        }
+
+        return { success: true };
+      } catch (error) {
+        console.error("[loans.update] Error:", error);
+        throw error;
+      }
+    }),
 });
 
 // ─── Payments Router ──────────────────────────────────────────────────────────

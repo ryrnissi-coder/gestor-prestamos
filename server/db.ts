@@ -325,3 +325,75 @@ export async function getUpcomingScheduleItems(userId: number) {
     .orderBy(amortizationSchedule.dueDate)
     .limit(20);
 }
+
+
+
+// ─── Create Client User ────────────────────────────────────────────────────────
+export async function createClientUser(
+  borrowerId: number,
+  email: string,
+  name: string
+): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(users).values({
+    openId: `client_${borrowerId}_${Date.now()}`,
+    name,
+    email,
+    role: "client",
+    borrowerId,
+    loginMethod: "email",
+    lastSignedIn: new Date(),
+  });
+
+  return result[0].insertId || 0;
+}
+
+// ─── Get Client's Loan ────────────────────────────────────────────────────────
+export async function getClientLoan(borrowerId: number) {
+  const db = await getDb();
+  if (!db) return null;
+
+  const result = await db.select().from(loans).where(eq(loans.borrowerId, borrowerId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+// ─── Get Client's Amortization Schedule ────────────────────────────────────────
+export async function getClientSchedule(loanId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db.select().from(amortizationSchedule).where(eq(amortizationSchedule.loanId, loanId));
+}
+
+// ─── Get Client's Payments ────────────────────────────────────────────────────
+export async function getClientPayments(loanId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db.select().from(payments).where(eq(payments.loanId, loanId)).orderBy(payments.paymentDate);
+}
+
+// ─── Update Client Profile ────────────────────────────────────────────────────
+export async function updateClientProfile(
+  borrowerId: number,
+  updates: {
+    phone?: string;
+    email?: string;
+    address?: string;
+  }
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const updateSet: Record<string, unknown> = {};
+  if (updates.phone !== undefined) updateSet.phone = updates.phone;
+  if (updates.email !== undefined) updateSet.email = updates.email;
+  if (updates.address !== undefined) updateSet.address = updates.address;
+  updateSet.updatedAt = new Date();
+
+  if (Object.keys(updateSet).length === 0) return;
+
+  await db.update(borrowers).set(updateSet).where(eq(borrowers.id, borrowerId));
+}

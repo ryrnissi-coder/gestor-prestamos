@@ -45,6 +45,7 @@ import {
   User,
   ShieldCheck,
   Trash2,
+  Edit,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -71,6 +72,13 @@ export default function LoanDetail() {
 
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editForm, setEditForm] = useState({
+    interestRate: "",
+    insuranceAmount: "",
+    termPeriods: "",
+    notes: "",
+  });
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(null);
   const [selectedAmount, setSelectedAmount] = useState("");
   const [paymentForm, setPaymentForm] = useState({
@@ -130,6 +138,16 @@ export default function LoanDetail() {
       utils.loans.get.invalidate({ id: loanId });
       utils.dashboard.stats.invalidate();
       toast.success("Estado actualizado");
+    },
+    onError: (e) => toast.error("Error: " + e.message),
+  });
+  const updateLoanMutation = trpc.loans.update.useMutation({
+    onSuccess: () => {
+      utils.loans.get.invalidate({ id: loanId });
+      utils.loans.getSchedule.invalidate({ loanId });
+      utils.dashboard.stats.invalidate();
+      toast.success("Préstamo actualizado");
+      setShowEditDialog(false);
     },
     onError: (e) => toast.error("Error: " + e.message),
   });
@@ -238,6 +256,23 @@ export default function LoanDetail() {
             Registrar Pago
           </Button>
           <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            onClick={() => {
+              setEditForm({
+                interestRate: parseFloat(loan.interestRate as string).toString(),
+                insuranceAmount: parseFloat(loan.insuranceAmount as string || "0").toString(),
+                termPeriods: loan.termPeriods.toString(),
+                notes: loan.notes || "",
+              });
+              setShowEditDialog(true);
+            }}
+          >
+            <Edit className="h-3.5 w-3.5" />
+            Editar
+          </Button>
+                    <Button
             size="sm"
             variant="outline"
             className="gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
@@ -580,6 +615,83 @@ export default function LoanDetail() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
+
+      {/* Edit Loan Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Préstamo #{loan.id}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            updateLoanMutation.mutate({
+              id: loanId,
+              interestRate: editForm.interestRate ? parseFloat(editForm.interestRate) : undefined,
+              insuranceAmount: editForm.insuranceAmount ? parseFloat(editForm.insuranceAmount) : undefined,
+              termPeriods: editForm.termPeriods ? parseInt(editForm.termPeriods) : undefined,
+              notes: editForm.notes || undefined,
+            });
+          }} className="space-y-4">
+            <div>
+              <Label htmlFor="eRate">Tasa de Interés (% por período)</Label>
+              <Input
+                id="eRate"
+                type="number"
+                step="0.01"
+                value={editForm.interestRate}
+                onChange={(e) => setEditForm({ ...editForm, interestRate: e.target.value })}
+                placeholder={parseFloat(loan.interestRate as string).toFixed(2)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Actual: {parseFloat(loan.interestRate as string).toFixed(2)}%</p>
+            </div>
+            <div>
+              <Label htmlFor="eInsurance">Seguro por Cuota (₡)</Label>
+              <Input
+                id="eInsurance"
+                type="number"
+                step="0.01"
+                value={editForm.insuranceAmount}
+                onChange={(e) => setEditForm({ ...editForm, insuranceAmount: e.target.value })}
+                placeholder={parseFloat(loan.insuranceAmount as string || "0").toFixed(2)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Actual: {formatCurrency(loan.insuranceAmount)}</p>
+            </div>
+            <div>
+              <Label htmlFor="eTerms">Cantidad de Cuotas</Label>
+              <Input
+                id="eTerms"
+                type="number"
+                value={editForm.termPeriods}
+                onChange={(e) => setEditForm({ ...editForm, termPeriods: e.target.value })}
+                placeholder={loan.termPeriods.toString()}
+              />
+              <p className="text-xs text-muted-foreground mt-1">Actual: {loan.termPeriods} cuotas</p>
+            </div>
+            <div>
+              <Label htmlFor="eNotes">Notas</Label>
+              <Textarea
+                id="eNotes"
+                value={editForm.notes}
+                onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                placeholder="Notas adicionales..."
+                rows={2}
+              />
+            </div>
+            <p className="text-xs text-amber-600 bg-amber-50 rounded p-2">
+              ⚠️ Si cambias la tasa, seguro o cantidad de cuotas, la tabla de amortización se regenerará automáticamente.
+            </p>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={updateLoanMutation.isPending}>
+                {updateLoanMutation.isPending ? "Guardando..." : "Guardar Cambios"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       </AlertDialog>
     </div>
   );

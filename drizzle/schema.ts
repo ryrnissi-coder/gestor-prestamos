@@ -17,7 +17,8 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: mysqlEnum("role", ["user", "admin", "client"]).default("user").notNull(),
+  borrowerId: int("borrowerId"), // Si es cliente, referencia al borrower
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -45,6 +46,10 @@ export type Borrower = typeof borrowers.$inferSelect;
 export type InsertBorrower = typeof borrowers.$inferInsert;
 
 // ─── Loans (Préstamos) ────────────────────────────────────────────────────────
+// ─── Relación: Usuario Cliente ↔ Deudor ────────────────────────────────────────
+// Un usuario con role='client' está vinculado a un borrower específico
+// Solo puede ver su propio préstamo
+
 export const loans = mysqlTable("loans", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
