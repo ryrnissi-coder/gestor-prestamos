@@ -118,3 +118,8 @@
 ## Bugs - Tablas de amortización
 - [x] Tablas de amortización no se ven en otros préstamos (algunos tienen cuotas pagadas)
 - [x] Algunos préstamos muestran cuotas pagadas pero la tabla no se despliega
+
+
+## Bugs - Problemas actuales
+- [x] Cuotas de Xinia (préstamo #90001) siguen mostrando como no pagadas en dashboard
+- [x] Tabla de amortización no se ve cuando el interés es compuesto (solo funciona con simple)

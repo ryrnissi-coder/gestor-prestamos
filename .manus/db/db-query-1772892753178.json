@@ -1,0 +1,100 @@
+{
+  "query": "SELECT id, periodNumber, dueDate, isPaid FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber LIMIT 15;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, periodNumber, dueDate, isPaid FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber LIMIT 15;",
+  "rows": [
+    {
+      "id": "30078",
+      "periodNumber": "1",
+      "dueDate": "2025-10-21",
+      "isPaid": "0"
+    },
+    {
+      "id": "30079",
+      "periodNumber": "2",
+      "dueDate": "2025-10-28",
+      "isPaid": "0"
+    },
+    {
+      "id": "30080",
+      "periodNumber": "3",
+      "dueDate": "2025-11-04",
+      "isPaid": "0"
+    },
+    {
+      "id": "30081",
+      "periodNumber": "4",
+      "dueDate": "2025-11-11",
+      "isPaid": "0"
+    },
+    {
+      "id": "30082",
+      "periodNumber": "5",
+      "dueDate": "2025-11-18",
+      "isPaid": "0"
+    },
+    {
+      "id": "30083",
+      "periodNumber": "6",
+      "dueDate": "2025-11-25",
+      "isPaid": "0"
+    },
+    {
+      "id": "30084",
+      "periodNumber": "7",
+      "dueDate": "2025-12-02",
+      "isPaid": "0"
+    },
+    {
+      "id": "30085",
+      "periodNumber": "8",
+      "dueDate": "2025-12-09",
+      "isPaid": "0"
+    },
+    {
+      "id": "30086",
+      "periodNumber": "9",
+      "dueDate": "2025-12-16",
+      "isPaid": "0"
+    },
+    {
+      "id": "30087",
+      "periodNumber": "10",
+      "dueDate": "2025-12-23",
+      "isPaid": "0"
+    },
+    {
+      "id": "30088",
+      "periodNumber": "11",
+      "dueDate": "2025-12-30",
+      "isPaid": "0"
+    },
+    {
+      "id": "30089",
+      "periodNumber": "12",
+      "dueDate": "2026-01-06",
+      "isPaid": "0"
+    },
+    {
+      "id": "30090",
+      "periodNumber": "13",
+      "dueDate": "2026-01-13",
+      "isPaid": "0"
+    },
+    {
+      "id": "30091",
+      "periodNumber": "14",
+      "dueDate": "2026-01-20",
+      "isPaid": "0"
+    },
+    {
+      "id": "30092",
+      "periodNumber": "15",
+      "dueDate": "2026-01-27",
+      "isPaid": "0"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tperiodNumber\tdueDate\tisPaid\n30078\t1\t2025-10-21\t0\n30079\t2\t2025-10-28\t0\n30080\t3\t2025-11-04\t0\n30081\t4\t2025-11-11\t0\n30082\t5\t2025-11-18\t0\n30083\t6\t2025-11-25\t0\n30084\t7\t2025-12-02\t0\n30085\t8\t2025-12-09\t0\n30086\t9\t2025-12-16\t0\n30087\t10\t2025-12-23\t0\n30088\t11\t2025-12-30\t0\n30089\t12\t2026-01-06\t0\n30090\t13\t2026-01-13\t0\n30091\t14\t2026-01-20\t0\n30092\t15\t2026-01-27\t0\n",
+  "stderr": "",
+  "execution_time_ms": 71
+}
