@@ -1,0 +1,45 @@
+{
+  "query": "SELECT id, userId, borrowerId, amount, interestType FROM loans ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, userId, borrowerId, amount, interestType FROM loans ORDER BY id;",
+  "rows": [
+    {
+      "id": "30002",
+      "userId": "1",
+      "borrowerId": "1",
+      "amount": "600000.00",
+      "interestType": "simple"
+    },
+    {
+      "id": "60001",
+      "userId": "1",
+      "borrowerId": "30001",
+      "amount": "100000.00",
+      "interestType": "simple"
+    },
+    {
+      "id": "90001",
+      "userId": "1",
+      "borrowerId": "60001",
+      "amount": "1900000.00",
+      "interestType": "simple"
+    },
+    {
+      "id": "120001",
+      "userId": "1",
+      "borrowerId": "90001",
+      "amount": "200000.00",
+      "interestType": "simple"
+    },
+    {
+      "id": "150002",
+      "userId": "1",
+      "borrowerId": "1",
+      "amount": "3003000.00",
+      "interestType": "compound"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tborrowerId\tamount\tinterestType\n30002\t1\t1\t600000.00\tsimple\n60001\t1\t30001\t100000.00\tsimple\n90001\t1\t60001\t1900000.00\tsimple\n120001\t1\t90001\t200000.00\tsimple\n150002\t1\t1\t3003000.00\tcompound\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}

@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, amount, interestRate, interestType, paymentFrequency, termPeriods, startDate, insuranceAmount FROM loans WHERE id = 150002;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, amount, interestRate, interestType, paymentFrequency, termPeriods, startDate, insuranceAmount FROM loans WHERE id = 150002;",
+  "rows": [
+    {
+      "id": "150002",
+      "amount": "3003000.00",
+      "interestRate": "3.0000",
+      "interestType": "compound",
+      "paymentFrequency": "biweekly",
+      "termPeriods": "38",
+      "startDate": "2026-01-30",
+      "insuranceAmount": "16000.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tamount\tinterestRate\tinterestType\tpaymentFrequency\ttermPeriods\tstartDate\tinsuranceAmount\n150002\t3003000.00\t3.0000\tcompound\tbiweekly\t38\t2026-01-30\t16000.00\n",
+  "stderr": "",
+  "execution_time_ms": 71
+}

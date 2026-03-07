@@ -123,3 +123,13 @@
 ## Bugs - Problemas actuales
 - [x] Cuotas de Xinia (préstamo #90001) siguen mostrando como no pagadas en dashboard
 - [x] Tabla de amortización no se ve cuando el interés es compuesto (solo funciona con simple)
+
+
+## Nuevas funcionalidades - Sistema de clientes con verificación
+- [ ] Tabla de invitaciones en base de datos
+- [ ] Página de registro por invitación (email)
+- [ ] Verificación automática de préstamo por email
+- [ ] Subida de comprobantes de pago
+- [ ] Panel de verificación de pagos (admin)
+- [ ] Pagos en estado "pendiente de verificación"
+- [x] Corregir tabla de amortización de interés compuesto que no se ve
