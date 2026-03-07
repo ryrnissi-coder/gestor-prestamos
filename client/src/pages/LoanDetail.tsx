@@ -403,7 +403,13 @@ export default function LoanDetail() {
                         ))}
                       </tr>
                     ))
-                  ) : schedule?.map((row) => {
+                  ) : !schedule || schedule.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} className="px-3 py-8 text-center text-muted-foreground">
+                        No hay tabla de amortización disponible
+                      </td>
+                    </tr>
+                  ) : schedule.map((row) => {
                     const overdue = !row.isPaid && isOverdue(row.dueDate as unknown as string);
                     return (
                       <tr
@@ -626,7 +632,7 @@ export default function LoanDetail() {
 
       {/* Edit Loan Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Préstamo #{loan.id}</DialogTitle>
           </DialogHeader>

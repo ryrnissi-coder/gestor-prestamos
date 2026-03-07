@@ -13,12 +13,14 @@ import LoanDetail from "./pages/LoanDetail";
 import NewLoan from "./pages/NewLoan";
 import Payments from "./pages/Payments";
 import Reports from "./pages/Reports";
+import ClientDashboard from "./pages/ClientDashboard";
 
 function Router() {
   return (
     <DashboardLayout>
       <Switch>
         <Route path="/" component={Dashboard} />
+        <Route path="/client" component={ClientDashboard} />
         <Route path="/borrowers" component={Borrowers} />
         <Route path="/borrowers/:id" component={BorrowerDetail} />
         <Route path="/loans" component={Loans} />

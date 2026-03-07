@@ -104,3 +104,17 @@
 
 ## Bugs - Creación de préstamos
 - [x] Error al crear préstamo: falla inserción en amortization_schedule con valores por defecto
+
+
+## Verificación de funcionalidades
+- [x] Portal cliente restringido - IMPLEMENTADO
+- [ ] Recordatorios automáticos WhatsApp - PENDIENTE (se implementará después)
+- [x] Reporte de cobranza - IMPLEMENTADO (cuotas vencidas, próximas 7 días, resumen por cliente)
+
+## Correcciones - Formulario de edición
+- [x] Botón guardar cambios no es visible en formulario de edición de préstamos
+
+
+## Bugs - Tablas de amortización
+- [x] Tablas de amortización no se ven en otros préstamos (algunos tienen cuotas pagadas)
+- [x] Algunos préstamos muestran cuotas pagadas pero la tabla no se despliega

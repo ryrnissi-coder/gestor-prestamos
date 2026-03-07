@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLocation } from "wouter";
-import { BarChart3, ExternalLink, TrendingUp, Coins, Banknote, Users, ShieldCheck } from "lucide-react";
+import { BarChart3, ExternalLink, TrendingUp, Coins, Banknote, Users, ShieldCheck, AlertTriangle } from "lucide-react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -217,6 +217,7 @@ export default function Reports() {
         <TabsList className="h-9">
           <TabsTrigger value="loans" className="text-xs">Préstamos</TabsTrigger>
           <TabsTrigger value="payments" className="text-xs">Cobros</TabsTrigger>
+          <TabsTrigger value="collection" className="text-xs">Reporte Cobranza</TabsTrigger>
           <TabsTrigger value="chart" className="text-xs">Gráficos</TabsTrigger>
         </TabsList>
 
@@ -412,6 +413,158 @@ export default function Reports() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Collection Report Tab */}
+        <TabsContent value="collection" className="mt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            {/* Overdue Loans */}
+            <Card className="border border-border shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                  Cuotas Vencidas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const overdueSchedules = loans
+                    ?.flatMap((loan) => {
+                      const schedule = loans.find((l) => l.id === loan.id);
+                      return schedule ? [] : [];
+                    }) || [];
+                  const overdue = loans
+                    ?.flatMap((loan: any) => {
+                      const today = new Date();
+                      return (loan.schedule || [])
+                        .filter((row: any) => !row.isPaid && new Date(row.dueDate) < today)
+                        .map((row: any) => ({
+                          ...row,
+                          loanId: loan.id,
+                          borrowerName: borrowerMap.get(loan.borrowerId),
+                        }));
+                    }) || [];
+                  return (
+                    <div className="space-y-2">
+                      {overdue.length === 0 ? (
+                        <p className="text-xs text-muted-foreground">No hay cuotas vencidas</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {overdue.slice(0, 10).map((row: any) => (
+                            <div key={row.id} className="flex justify-between items-start text-xs border-b pb-2">
+                              <div>
+                                <p className="font-medium">{row.borrowerName}</p>
+                                <p className="text-muted-foreground">Cuota #{row.periodNumber} - {formatDate(row.dueDate)}</p>
+                              </div>
+                              <p className="font-semibold text-destructive">{formatCurrency(row.totalPayment)}</p>
+                            </div>
+                          ))}
+                          {overdue.length > 10 && (
+                            <p className="text-xs text-muted-foreground text-center pt-2">+{overdue.length - 10} más</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Payments */}
+            <Card className="border border-border shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-orange-500" />
+                  Próximas 7 Días
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const today = new Date();
+                  const sevenDaysLater = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+                  const upcoming = loans
+                    ?.flatMap((loan: any) => {
+                      return (loan.schedule || [])
+                        .filter((row: any) => !row.isPaid && new Date(row.dueDate) >= today && new Date(row.dueDate) <= sevenDaysLater)
+                        .map((row: any) => ({
+                          ...row,
+                          loanId: loan.id,
+                          borrowerName: borrowerMap.get(loan.borrowerId),
+                        }));
+                    }) || [];
+                  return (
+                    <div className="space-y-2">
+                      {upcoming.length === 0 ? (
+                        <p className="text-xs text-muted-foreground">No hay cuotas próximas</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {upcoming.slice(0, 10).map((row: any) => (
+                            <div key={row.id} className="flex justify-between items-start text-xs border-b pb-2">
+                              <div>
+                                <p className="font-medium">{row.borrowerName}</p>
+                                <p className="text-muted-foreground">Cuota #{row.periodNumber} - {formatDate(row.dueDate)}</p>
+                              </div>
+                              <p className="font-semibold text-orange-600">{formatCurrency(row.totalPayment)}</p>
+                            </div>
+                          ))}
+                          {upcoming.length > 10 && (
+                            <p className="text-xs text-muted-foreground text-center pt-2">+{upcoming.length - 10} más</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Collection Summary by Borrower */}
+          <Card className="border border-border shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Resumen de Cobranza por Cliente</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b bg-muted/40">
+                      <th className="text-left px-3 py-2 font-medium text-muted-foreground">Cliente</th>
+                      <th className="text-right px-3 py-2 font-medium text-muted-foreground">Cuotas Pagadas</th>
+                      <th className="text-right px-3 py-2 font-medium text-muted-foreground">Cuotas Pendientes</th>
+                      <th className="text-right px-3 py-2 font-medium text-muted-foreground">Tasa de Pago</th>
+                      <th className="text-right px-3 py-2 font-medium text-muted-foreground">Monto Pendiente</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {borrowers?.map((borrower) => {
+                      const borrowerLoans = loans?.filter((l) => l.borrowerId === borrower.id) || [];
+                      const allSchedules = borrowerLoans.flatMap((l: any) => l.schedule || []);
+                      const paidCount = allSchedules.filter((s: any) => s.isPaid).length;
+                      const totalCount = allSchedules.length;
+                      const paymentRate = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
+                      const pendingAmount = allSchedules
+                        .filter((s: any) => !s.isPaid)
+                        .reduce((sum: number, s: any) => sum + parseFloat(s.totalPayment as string), 0);
+                      return (
+                        <tr key={borrower.id} className="border-b hover:bg-muted/20">
+                          <td className="px-3 py-2 font-medium">{borrower.firstName} {borrower.lastName}</td>
+                          <td className="text-right px-3 py-2 text-green-600 font-semibold">{paidCount}</td>
+                          <td className="text-right px-3 py-2 text-orange-600 font-semibold">{totalCount - paidCount}</td>
+                          <td className="text-right px-3 py-2">
+                            <span className={`font-semibold ${paymentRate >= 75 ? "text-green-600" : paymentRate >= 50 ? "text-orange-600" : "text-destructive"}`}>
+                              {paymentRate}%
+                            </span>
+                          </td>
+                          <td className="text-right px-3 py-2 font-mono">{formatCurrency(pendingAmount)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
