@@ -11,6 +11,8 @@ import {
   InsertAmortizationScheduleRow,
   payments,
   InsertPayment,
+  clientInvitations,
+  InsertClientInvitation,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -396,4 +398,46 @@ export async function updateClientProfile(
   if (Object.keys(updateSet).length === 0) return;
 
   await db.update(borrowers).set(updateSet).where(eq(borrowers.id, borrowerId));
+}
+
+
+// ─── Client Invitations ────────────────────────────────────────────────────────
+export async function createClientInvitation(data: InsertClientInvitation) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(clientInvitations).values(data);
+  return result;
+}
+
+export async function getInvitationByToken(token: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(clientInvitations).where(eq(clientInvitations.invitationToken, token));
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function acceptInvitation(token: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(clientInvitations)
+    .set({ status: "accepted", acceptedAt: new Date() })
+    .where(eq(clientInvitations.invitationToken, token));
+}
+
+export async function getClientInvitations(borrowerId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(clientInvitations).where(eq(clientInvitations.borrowerId, borrowerId));
+}
+
+export async function getBorrowerByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(borrowers).where(eq(borrowers.email, email));
+  return result.length > 0 ? result[0] : null;
 }

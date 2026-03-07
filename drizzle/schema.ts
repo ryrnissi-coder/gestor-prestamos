@@ -106,3 +106,20 @@ export const payments = mysqlTable("payments", {
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
+
+// ─── Client Invitations (Invitaciones para Clientes) ──────────────────────────
+export const clientInvitations = mysqlTable("client_invitations", {
+  id: int("id").autoincrement().primaryKey(),
+  borrowerId: int("borrowerId").notNull(), // Cliente a invitar
+  email: varchar("email", { length: 320 }).notNull(),
+  invitationToken: varchar("invitationToken", { length: 64 }).notNull().unique(), // Token único
+  status: mysqlEnum("status", ["pending", "accepted", "expired"]).default("pending").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(), // Expira en 7 días
+  acceptedAt: timestamp("acceptedAt"),
+  createdBy: int("createdBy").notNull(), // Usuario admin que creó la invitación
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ClientInvitation = typeof clientInvitations.$inferSelect;
+export type InsertClientInvitation = typeof clientInvitations.$inferInsert;

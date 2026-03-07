@@ -4,8 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLocation, useParams } from "wouter";
-import { ArrowLeft, Phone, Mail, MapPin, IdCard, Banknote, Plus, MessageCircle } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, IdCard, Banknote, Plus, MessageCircle, UserPlus, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 function buildWhatsAppUrl(phone: string | null | undefined, message: string): string {
   const cleaned = (phone ?? "").replace(/\D/g, "");
@@ -25,6 +28,9 @@ export default function BorrowerDetail() {
   const { id } = useParams<{ id: string }>();
   const [, setLocation] = useLocation();
   const borrowerId = parseInt(id ?? "0");
+  const [invitationOpen, setInvitationOpen] = useState(false);
+  const [invitationLink, setInvitationLink] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const { data: borrower, isLoading: borrowerLoading } = trpc.borrowers.get.useQuery(
     { id: borrowerId },
@@ -38,6 +44,24 @@ export default function BorrowerDetail() {
     { borrowerId },
     { enabled: !!borrowerId }
   );
+
+  const createInvitation = trpc.invitations.create.useMutation({
+    onSuccess: (data) => {
+      const link = `${window.location.origin}/register?token=${data.token}`;
+      setInvitationLink(link);
+      toast.success("Invitación creada");
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Error al crear invitación");
+    },
+  });
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(invitationLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success("Enlace copiado al portapapeles");
+  };
 
   const totalBorrowed = loans?.reduce((s, l) => s + parseFloat(l.amount as string), 0) ?? 0;
   const totalPaid = payments?.reduce((s, p) => s + parseFloat(p.amount as string), 0) ?? 0;
@@ -68,162 +92,156 @@ export default function BorrowerDetail() {
   return (
     <div className="space-y-5 p-1">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => setLocation("/borrowers")} className="h-9 w-9">
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">
-            {borrower.firstName} {borrower.lastName}
-          </h1>
-          <p className="text-sm text-muted-foreground">Perfil del cliente</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => setLocation("/borrowers")} className="h-9 w-9">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              {borrower.firstName} {borrower.lastName}
+            </h1>
+            <p className="text-sm text-muted-foreground">Perfil del cliente</p>
+          </div>
         </div>
+        <Dialog open={invitationOpen} onOpenChange={setInvitationOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <UserPlus className="h-4 w-4" />
+              Enviar Invitación
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Enviar Invitación al Cliente</DialogTitle>
+              <DialogDescription>
+                Genera un enlace de invitación para que {borrower.firstName} pueda registrarse y acceder a su préstamo
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              {!invitationLink ? (
+                <Button
+                  onClick={() => createInvitation.mutate({ borrowerId })}
+                  disabled={createInvitation.isPending}
+                  className="w-full"
+                >
+                  {createInvitation.isPending ? "Generando..." : "Generar Enlace de Invitación"}
+                </Button>
+              ) : (
+                <>
+                  <div className="bg-muted p-3 rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-2">Enlace de invitación:</p>
+                    <p className="text-sm break-all font-mono">{invitationLink}</p>
+                  </div>
+                  <Button onClick={handleCopyLink} className="w-full gap-2">
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Copiado
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copiar Enlace
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Info Card */}
         <Card className="border border-border shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Información de Contacto</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Información de Contacto</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <span className="text-lg font-bold text-primary">
-                  {borrower.firstName.charAt(0)}{borrower.lastName.charAt(0)}
-                </span>
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">{borrower.firstName} {borrower.lastName}</p>
-                <p className="text-xs text-muted-foreground">Registrado {formatDate(borrower.createdAt)}</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <a href={`mailto:${borrower.email}`} className="text-sm text-blue-600 hover:underline break-all">
+                {borrower.email}
+              </a>
             </div>
-            <div className="space-y-2 pt-1">
-              {borrower.phone && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Phone className="h-3.5 w-3.5 shrink-0" />
-                  <span className="flex-1">{borrower.phone}</span>
-                  <a
-                    href={buildWhatsAppUrl(borrower.phone, `Estimado(a) ${borrower.firstName} ${borrower.lastName}, este mensaje es para recordarle que se encuentra pendiente su cuota de su compromiso de pago con nosotros, favor realizarlo a la brevedad. En caso de haberlo realizado, favor enviar el comprobante para la aplicación.`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Enviar mensaje por WhatsApp"
-                    className="inline-flex items-center justify-center h-6 w-6 rounded-md bg-green-100 hover:bg-green-200 text-green-700 transition-colors shrink-0"
-                  >
-                    <MessageCircle className="h-3 w-3" />
-                  </a>
-                </div>
-              )}
-              {borrower.email && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mail className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{borrower.email}</span>
-                </div>
-              )}
-              {borrower.idNumber && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <IdCard className="h-3.5 w-3.5 shrink-0" />
-                  <span>{borrower.idNumber}</span>
-                </div>
-              )}
-              {borrower.address && (
-                <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                  <span>{borrower.address}</span>
-                </div>
-              )}
-              {borrower.notes && (
-                <div className="pt-2 border-t">
-                  <p className="text-xs text-muted-foreground">{borrower.notes}</p>
-                </div>
-              )}
+            {borrower.phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <a href={`tel:${borrower.phone}`} className="text-sm text-blue-600 hover:underline">
+                  {borrower.phone}
+                </a>
+              </div>
+            )}
+            {borrower.address && (
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                <p className="text-sm text-muted-foreground">{borrower.address}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* ID Card */}
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Identificación</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Número de ID</p>
+              <p className="text-sm font-medium">{borrower.idNumber}</p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Stats */}
-        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4 content-start">
-          <Card className="border border-border shadow-sm">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Préstamos</p>
-              <p className="text-2xl font-bold text-foreground">{loans?.length ?? 0}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">en total</p>
-            </CardContent>
-          </Card>
-          <Card className="border border-border shadow-sm">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Total Prestado</p>
-              <p className="text-xl font-bold text-foreground">{formatCurrency(totalBorrowed)}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">capital</p>
-            </CardContent>
-          </Card>
-          <Card className="border border-border shadow-sm">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-1">Total Pagado</p>
-              <p className="text-xl font-bold text-success">{formatCurrency(totalPaid)}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">recibido</p>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Summary Card */}
+        <Card className="border border-border shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Resumen Financiero</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Total Prestado</p>
+              <p className="text-lg font-bold">{formatCurrency(totalBorrowed)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Total Pagado</p>
+              <p className="text-lg font-bold text-green-600">{formatCurrency(totalPaid)}</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Loans */}
-      <Card className="border border-border shadow-sm">
-        <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Historial de Préstamos</CardTitle>
-          <Button
-            size="sm"
-            variant="outline"
-            className="gap-1.5"
-            onClick={() => setLocation("/loans/new")}
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Nuevo Préstamo
-          </Button>
-        </CardHeader>
-        <CardContent className="p-0">
-          {loansLoading ? (
-            <div className="p-4 space-y-2">
-              {[1, 2].map((i) => <Skeleton key={i} className="h-16 w-full" />)}
-            </div>
-          ) : loans?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 gap-2 text-muted-foreground">
-              <Banknote className="h-8 w-8 opacity-30" />
-              <p className="text-sm">Sin préstamos registrados</p>
-            </div>
-          ) : (
-            <div className="divide-y">
-              {loans?.map((loan) => (
+      {/* Loans Section */}
+      {!loansLoading && loans && loans.length > 0 && (
+        <Card className="border border-border shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg">Préstamos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {loans.map((loan) => (
                 <div
                   key={loan.id}
-                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/30 transition-colors cursor-pointer"
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
                   onClick={() => setLocation(`/loans/${loan.id}`)}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Banknote className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">
-                        {formatCurrency(loan.amount)} · {getFrequencyLabel(loan.paymentFrequency)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {loan.termPeriods} cuotas · {parseFloat(loan.interestRate as string).toFixed(2)}% por período
-                      </p>
-                    </div>
+                  <div className="flex-1">
+                    <p className="font-medium">Préstamo #{loan.id}</p>
+                    <p className="text-sm text-muted-foreground">{formatCurrency(loan.amount)}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <p className="text-xs text-muted-foreground hidden sm:block">{formatDate(loan.startDate as unknown as string)}</p>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${statusColors[loan.status] ?? ""}`}>
-                      {getLoanStatusLabel(loan.status)}
-                    </span>
+                  <div className="text-right">
+                    <Badge className={statusColors[loan.status] || ""}>{getLoanStatusLabel(loan.status)}</Badge>
+                    <p className="text-xs text-muted-foreground mt-1">{loan.termPeriods} cuotas</p>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

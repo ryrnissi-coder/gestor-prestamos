@@ -14,24 +14,28 @@ import NewLoan from "./pages/NewLoan";
 import Payments from "./pages/Payments";
 import Reports from "./pages/Reports";
 import ClientDashboard from "./pages/ClientDashboard";
+import { RegisterByInvitation } from "./pages/RegisterByInvitation";
 
 function Router() {
   return (
-    <DashboardLayout>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/client" component={ClientDashboard} />
-        <Route path="/borrowers" component={Borrowers} />
-        <Route path="/borrowers/:id" component={BorrowerDetail} />
-        <Route path="/loans" component={Loans} />
-        <Route path="/loans/new" component={NewLoan} />
-        <Route path="/loans/:id" component={LoanDetail} />
-        <Route path="/payments" component={Payments} />
-        <Route path="/reports" component={Reports} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </DashboardLayout>
+    <Switch>
+      <Route path="/register" component={RegisterByInvitation} />
+      <DashboardLayout>
+        <Switch>
+          <Route path="/" component={Dashboard} />
+          <Route path="/client" component={ClientDashboard} />
+          <Route path="/borrowers" component={Borrowers} />
+          <Route path="/borrowers/:id" component={BorrowerDetail} />
+          <Route path="/loans" component={Loans} />
+          <Route path="/loans/new" component={NewLoan} />
+          <Route path="/loans/:id" component={LoanDetail} />
+          <Route path="/payments" component={Payments} />
+          <Route path="/reports" component={Reports} />
+          <Route path="/404" component={NotFound} />
+          <Route component={NotFound} />
+        </Switch>
+      </DashboardLayout>
+    </Switch>
   );
 }
 

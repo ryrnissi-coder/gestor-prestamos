@@ -125,10 +125,11 @@
 - [x] Tabla de amortización no se ve cuando el interés es compuesto (solo funciona con simple)
 
 
-## Nuevas funcionalidades - Sistema de clientes con verificación
-- [ ] Tabla de invitaciones en base de datos
-- [ ] Página de registro por invitación (email)
-- [ ] Verificación automática de préstamo por email
+## Nuevas funcionalidades - Sistema de invitaciones por email
+- [x] Tabla de invitaciones en base de datos
+- [x] Página de registro por invitación (email)
+- [x] Verificación automática de préstamo por email
+- [x] Botón para generar invitaciones en BorrowerDetail
 - [ ] Subida de comprobantes de pago
 - [ ] Panel de verificación de pagos (admin)
 - [ ] Pagos en estado "pendiente de verificación"

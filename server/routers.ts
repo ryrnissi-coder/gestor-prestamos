@@ -25,6 +25,13 @@ import {
   getDashboardStats,
   getOverdueScheduleItems,
   getUpcomingScheduleItems,
+  createClientInvitation,
+  getInvitationByToken,
+  acceptInvitation,
+  createClientUser,
+  getClientLoan,
+  getClientSchedule,
+  getBorrowerByEmail,
 } from "./db";
 import { generateAmortizationSchedule } from "./amortization";
 import { TRPCError } from "@trpc/server";
@@ -331,6 +338,70 @@ const dashboardRouter = router({
   upcomingItems: protectedProcedure.query(({ ctx }) => getUpcomingScheduleItems(ctx.user.id)),
 });
 
+// ─── Invitations Router ──────────────────────────────────────────────────────
+const invitationsRouter = router({
+  create: protectedProcedure
+    .input(z.object({
+      borrowerId: z.number(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // Verify borrower belongs to current user
+      const borrower = await getBorrowerById(input.borrowerId, ctx.user.id);
+      if (!borrower) throw new TRPCError({ code: "NOT_FOUND", message: "Borrower not found" });
+
+      // Generate unique token
+      const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+      await createClientInvitation({
+        borrowerId: input.borrowerId,
+        email: borrower.email || "",
+        invitationToken: token,
+        status: "pending",
+        expiresAt,
+        createdBy: ctx.user.id,
+      });
+
+      // Return invitation link
+      const invitationLink = `${process.env.VITE_FRONTEND_URL || "http://localhost:5173"}/register?token=${token}`;
+      return { token, invitationLink, expiresAt };
+    }),
+
+  validate: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(async ({ input }) => {
+      const invitation = await getInvitationByToken(input.token);
+      if (!invitation) throw new TRPCError({ code: "NOT_FOUND", message: "Invitation not found" });
+      if (invitation.status !== "pending") throw new TRPCError({ code: "BAD_REQUEST", message: "Invitation already used or expired" });
+      if (new Date() > invitation.expiresAt) throw new TRPCError({ code: "BAD_REQUEST", message: "Invitation expired" });
+
+      return { borrowerId: invitation.borrowerId, email: invitation.email };
+    }),
+
+  accept: publicProcedure
+    .input(z.object({
+      token: z.string(),
+      password: z.string().min(6),
+    }))
+    .mutation(async ({ input }) => {
+      const invitation = await getInvitationByToken(input.token);
+      if (!invitation) throw new TRPCError({ code: "NOT_FOUND", message: "Invitation not found" });
+      if (invitation.status !== "pending") throw new TRPCError({ code: "BAD_REQUEST", message: "Invitation already used" });
+      if (new Date() > invitation.expiresAt) throw new TRPCError({ code: "BAD_REQUEST", message: "Invitation expired" });
+
+      // Create client user
+      const borrower = await getBorrowerById(invitation.borrowerId, 0); // We don't have userId yet
+      if (!borrower) throw new TRPCError({ code: "NOT_FOUND", message: "Borrower not found" });
+
+      const userId = await createClientUser(invitation.borrowerId, invitation.email, `${borrower.firstName} ${borrower.lastName}`);
+
+      // Mark invitation as accepted
+      await acceptInvitation(input.token);
+
+      return { success: true, userId, borrowerId: invitation.borrowerId };
+    }),
+});
+
 // ─── App Router ───────────────────────────────────────────────────────────────
 export const appRouter = router({
   system: systemRouter,
@@ -346,6 +417,7 @@ export const appRouter = router({
   loans: loansRouter,
   payments: paymentsRouter,
   dashboard: dashboardRouter,
+  invitations: invitationsRouter,
 });
 
 export type AppRouter = typeof appRouter;
