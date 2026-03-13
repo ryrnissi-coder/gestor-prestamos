@@ -136,7 +136,19 @@ const loansRouter = router({
         disbursedAt: new Date(),
       } as any);
 
-      const loanId = (result as any).insertId as number;
+      console.log("[loans.create] Insert result:", JSON.stringify(result));
+      console.log("[loans.create] Result type:", typeof result, "Is array:", Array.isArray(result));
+      
+      let loanId: number | undefined;
+      if (typeof result === 'object' && result !== null) {
+        // Intenta diferentes formas de obtener insertId
+        loanId = (result as any).insertId || (result as any)[0]?.insertId || (Array.isArray(result) ? result[0]?.insertId : undefined);
+      }
+      
+      console.log("[loans.create] Extracted loanId:", loanId);
+      if (!loanId || loanId === 0) {
+        throw new Error(`Failed to get loanId from insert result: ${JSON.stringify(result)}`);
+      }
 
       // 2. Generar tabla de amortización
       const schedule = generateAmortizationSchedule({
@@ -152,7 +164,7 @@ const loansRouter = router({
       const rows = schedule.map((row) => ({
         loanId,
         periodNumber: row.periodNumber,
-        dueDate: new Date(row.dueDate + "T00:00:00Z"),
+        dueDate: typeof row.dueDate === 'string' ? new Date(row.dueDate) : row.dueDate,
         principalAmount: row.principalAmount.toString(),
         interestAmount: row.interestAmount.toString(),
         insuranceAmount: row.insuranceAmount.toString(),
@@ -162,6 +174,7 @@ const loansRouter = router({
       }));
 
       console.log("[loans.create] Inserting", rows.length, "schedule rows for loan", loanId);
+      console.log("[loans.create] First row:", JSON.stringify(rows[0], null, 2));
       await createAmortizationSchedule(rows as any);
       console.log("[loans.create] Successfully created loan", loanId);
       return { success: true, loanId };
@@ -266,17 +279,17 @@ const loansRouter = router({
             insuranceAmount: newInsuranceAmount,
           });
 
-          const rows = schedule.map((row) => ({
-            loanId: id,
-            periodNumber: row.periodNumber,
-            dueDate: new Date(row.dueDate + "T00:00:00Z"),
-            principalAmount: row.principalAmount.toString(),
-            interestAmount: row.interestAmount.toString(),
-            insuranceAmount: row.insuranceAmount.toString(),
-            totalPayment: row.totalPayment.toString(),
-            remainingBalance: row.remainingBalance.toString(),
-            isPaid: false,
-          }));
+      const rows = schedule.map((row) => ({
+        loanId: loan.id,
+        periodNumber: row.periodNumber,
+        dueDate: typeof row.dueDate === 'string' ? new Date(row.dueDate) : row.dueDate,
+        principalAmount: row.principalAmount.toString(),
+        interestAmount: row.interestAmount.toString(),
+        insuranceAmount: row.insuranceAmount.toString(),
+        totalPayment: row.totalPayment.toString(),
+        remainingBalance: row.remainingBalance.toString(),
+        isPaid: false,
+      }));
 
           await createAmortizationSchedule(rows as any);
         }

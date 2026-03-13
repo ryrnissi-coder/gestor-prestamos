@@ -134,3 +134,7 @@
 - [ ] Panel de verificación de pagos (admin)
 - [ ] Pagos en estado "pendiente de verificación"
 - [x] Corregir tabla de amortización de interés compuesto que no se ve
+
+
+## Bugs - Errores actuales
+- [ ] Error al crear pr\u00e9stamo: falla inserci\u00f3n en amortization_schedule con valores por defecto (loanId, id)
