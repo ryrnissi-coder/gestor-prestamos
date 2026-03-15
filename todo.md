@@ -81,18 +81,17 @@
 - [x] Tabla de amortización no se despliega en todos los préstamos
 - [ ] Agregar avisos de vencimiento por WhatsApp al número 70460451
 
-
 ## Nuevas funcionalidades - Edición y usuarios cliente
 - [x] Botón editar préstamo en lista y detalle
 - [x] Formulario editar préstamo - EXPANDIDO (todos los campos)
 - [x] Permitir editar: monto, tipo interés, frecuencia pago, fecha inicio, tasa, seguro, cuotas, notas
 - [x] Recalcular tabla de amortización al editar préstamo
-- [ ] Sistema de roles: admin vs cliente
-- [ ] Crear usuario para cliente desde perfil de cliente
-- [ ] Página de login para clientes
-- [ ] Dashboard cliente: ver solo su préstamo
-- [ ] Perfil cliente: editar teléfono, email, dirección (solo lectura del préstamo)
-- [ ] Proteger rutas: clientes no pueden ver otros préstamos
+- [x] Sistema de roles: admin vs cliente
+- [x] Crear usuario para cliente desde perfil de cliente
+- [x] Página de login para clientes
+- [x] Dashboard cliente: ver solo su préstamo
+- [x] Perfil cliente: editar teléfono, email, dirección (solo lectura del préstamo)
+- [x] Proteger rutas: clientes no pueden ver otros préstamos
 
 ## Correcciones - Cálculo de cuotas
 - [x] Mostrar cuota final (capital + interés + seguro) en tiempo real en formulario de creación
@@ -105,7 +104,6 @@
 ## Bugs - Creación de préstamos
 - [x] Error al crear préstamo: falla inserción en amortization_schedule con valores por defecto
 
-
 ## Verificación de funcionalidades
 - [x] Portal cliente restringido - IMPLEMENTADO
 - [ ] Recordatorios automáticos WhatsApp - PENDIENTE (se implementará después)
@@ -114,16 +112,13 @@
 ## Correcciones - Formulario de edición
 - [x] Botón guardar cambios no es visible en formulario de edición de préstamos
 
-
 ## Bugs - Tablas de amortización
 - [x] Tablas de amortización no se ven en otros préstamos (algunos tienen cuotas pagadas)
 - [x] Algunos préstamos muestran cuotas pagadas pero la tabla no se despliega
 
-
 ## Bugs - Problemas actuales
 - [x] Cuotas de Xinia (préstamo #90001) siguen mostrando como no pagadas en dashboard
 - [x] Tabla de amortización no se ve cuando el interés es compuesto (solo funciona con simple)
-
 
 ## Nuevas funcionalidades - Sistema de invitaciones por email
 - [x] Tabla de invitaciones en base de datos
@@ -135,6 +130,18 @@
 - [ ] Pagos en estado "pendiente de verificación"
 - [x] Corregir tabla de amortización de interés compuesto que no se ve
 
+## PORTAL DE CLIENTES - IMPLEMENTACIÓN COMPLETADA
+- [x] Actualizar schema: agregar campo borrowerId a tabla users
+- [x] Crear procedimiento tRPC: borrowerClient.getLoan
+- [x] Crear procedimiento tRPC: borrowerClient.getSchedule
+- [x] Crear procedimiento tRPC: borrowerClient.getPayments
+- [x] Crear página ClientDashboard.tsx (solo su préstamo)
+- [x] Proteger rutas: /client/* solo accesibles para clientes
+- [x] Validar permisos: clientes solo ven su préstamo
+- [x] Menú diferenciado para clientes vs admins
+- [x] Sistema de invitaciones por email (ya implementado)
+- [ ] Tests vitest para login y dashboard de cliente
+- [ ] Mejorar UI del portal de cliente (responsive, estilos)
 
 ## Bugs - Errores actuales
-- [ ] Error al crear pr\u00e9stamo: falla inserci\u00f3n en amortization_schedule con valores por defecto (loanId, id)
+- [ ] Error al crear préstamo: falla inserción en amortization_schedule con valores por defecto (loanId, id)

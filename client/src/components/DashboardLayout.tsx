@@ -27,12 +27,16 @@ import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
-const menuItems = [
+const adminMenuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: Users, label: "Clientes", path: "/borrowers" },
   { icon: Banknote, label: "Préstamos", path: "/loans" },
   { icon: CreditCard, label: "Pagos", path: "/payments" },
   { icon: BarChart3, label: "Reportes", path: "/reports" },
+];
+
+const clientMenuItems = [
+  { icon: Banknote, label: "Mi Préstamo", path: "/client" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -120,6 +124,7 @@ function DashboardLayoutContent({
   const isCollapsed = state === "collapsed";
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const menuItems = user?.role === "client" ? clientMenuItems : adminMenuItems;
   const activeMenuItem = menuItems.find(item => item.path === location);
   const isMobile = useIsMobile();
 
@@ -189,7 +194,7 @@ function DashboardLayoutContent({
 
           <SidebarContent className="gap-0">
             <SidebarMenu className="px-2 py-1">
-              {menuItems.map(item => {
+              {(user?.role === "client" ? clientMenuItems : adminMenuItems).map(item => {
                 const isActive = location === item.path;
                 return (
                   <SidebarMenuItem key={item.path}>

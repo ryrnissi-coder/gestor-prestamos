@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function ClientDashboard() {
   const { user } = useAuth();
-  const { data: loans, isLoading } = trpc.loans.list.useQuery({});
+  const { data: loan, isLoading } = trpc.borrowerClient.getLoan.useQuery();
 
   if (isLoading) {
     return (
@@ -23,8 +23,7 @@ export default function ClientDashboard() {
     );
   }
 
-  // El cliente solo ve su préstamo
-  const loan = loans?.[0];
+  // El cliente ya solo ve su préstamo
 
   if (!loan) {
     return (
@@ -73,7 +72,7 @@ export default function ClientDashboard() {
   };
 
   // Obtener tabla de amortización
-  const { data: schedule } = trpc.loans.getSchedule.useQuery({ loanId: loan.id });
+  const { data: schedule } = trpc.borrowerClient.getSchedule.useQuery();
 
   const paidCount = schedule?.filter((row) => row.isPaid).length || 0;
   const totalCount = schedule?.length || 0;

@@ -31,6 +31,7 @@ import {
   createClientUser,
   getClientLoan,
   getClientSchedule,
+  getClientPayments,
   getBorrowerByEmail,
 } from "./db";
 import { generateAmortizationSchedule } from "./amortization";
@@ -415,6 +416,36 @@ const invitationsRouter = router({
     }),
 });
 
+// ─── Client Router ────────────────────────────────────────────────────────────
+const borrowerClientRouter = router({
+  getLoan: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.user.role !== "client" || !ctx.user.borrowerId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Not a client" });
+    }
+    const loan = await getClientLoan(ctx.user.borrowerId);
+    if (!loan) throw new TRPCError({ code: "NOT_FOUND", message: "Loan not found" });
+    return loan;
+  }),
+
+  getSchedule: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.user.role !== "client" || !ctx.user.borrowerId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Not a client" });
+    }
+    const loan = await getClientLoan(ctx.user.borrowerId);
+    if (!loan) throw new TRPCError({ code: "NOT_FOUND", message: "Loan not found" });
+    return getClientSchedule(loan.id);
+  }),
+
+  getPayments: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.user.role !== "client" || !ctx.user.borrowerId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Not a client" });
+    }
+    const loan = await getClientLoan(ctx.user.borrowerId);
+    if (!loan) throw new TRPCError({ code: "NOT_FOUND", message: "Loan not found" });
+    return getClientPayments(loan.id);
+  }),
+});
+
 // ─── App Router ───────────────────────────────────────────────────────────────
 export const appRouter = router({
   system: systemRouter,
@@ -431,6 +462,7 @@ export const appRouter = router({
   payments: paymentsRouter,
   dashboard: dashboardRouter,
   invitations: invitationsRouter,
+  borrowerClient: borrowerClientRouter,
 });
 
 export type AppRouter = typeof appRouter;

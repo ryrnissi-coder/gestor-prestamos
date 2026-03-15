@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
@@ -15,15 +15,36 @@ import Payments from "./pages/Payments";
 import Reports from "./pages/Reports";
 import ClientDashboard from "./pages/ClientDashboard";
 import { RegisterByInvitation } from "./pages/RegisterByInvitation";
+import { useAuth } from "./_core/hooks/useAuth";
+
+function ClientDashboardWrapper() {
+  const { user, loading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "client") {
+    setLocation("/");
+    return null;
+  }
+
+  return <ClientDashboard />;
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/register" component={RegisterByInvitation} />
+      <Route path="/client" component={ClientDashboardWrapper} />
       <DashboardLayout>
         <Switch>
           <Route path="/" component={Dashboard} />
-          <Route path="/client" component={ClientDashboard} />
           <Route path="/borrowers" component={Borrowers} />
           <Route path="/borrowers/:id" component={BorrowerDetail} />
           <Route path="/loans" component={Loans} />
