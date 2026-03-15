@@ -145,3 +145,9 @@
 
 ## Bugs - Errores actuales
 - [ ] Error al crear préstamo: falla inserción en amortization_schedule con valores por defecto (loanId, id)
+
+## Mejoras - Tabla de Amortización
+- [x] Agregar botón/checkbox en tabla de amortización para marcar cuota como pagada
+- [x] Procedimiento tRPC para marcar cuota como pagada directamente desde tabla (ya existía)
+- [x] Actualización en tiempo real del estado de la cuota (optimistic updates implementados)
+- [ ] Tests para marcar pagos desde tabla de amortización

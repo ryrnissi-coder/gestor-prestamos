@@ -112,21 +112,47 @@ export default function LoanDetail() {
   );
 
   const markPaidMutation = trpc.loans.markPaid.useMutation({
+    onMutate: async (variables) => {
+      await utils.loans.getSchedule.cancel({ loanId });
+      const prev = utils.loans.getSchedule.getData({ loanId });
+      if (prev) {
+        utils.loans.getSchedule.setData({ loanId }, 
+          prev.map(r => r.id === variables.scheduleId ? { ...r, isPaid: true } : r)
+        );
+      }
+      return { prev };
+    },
     onSuccess: () => {
       utils.loans.getSchedule.invalidate({ loanId });
       utils.payments.list.invalidate({ loanId });
       utils.dashboard.stats.invalidate();
       toast.success("Cuota marcada como pagada");
     },
-    onError: (e) => toast.error("Error: " + e.message),
+    onError: (e, _, ctx) => {
+      if (ctx?.prev) utils.loans.getSchedule.setData({ loanId }, ctx.prev);
+      toast.error("Error: " + e.message);
+    },
   });
 
   const markUnpaidMutation = trpc.loans.markUnpaid.useMutation({
+    onMutate: async (variables) => {
+      await utils.loans.getSchedule.cancel({ loanId });
+      const prev = utils.loans.getSchedule.getData({ loanId });
+      if (prev) {
+        utils.loans.getSchedule.setData({ loanId }, 
+          prev.map(r => r.id === variables.scheduleId ? { ...r, isPaid: false } : r)
+        );
+      }
+      return { prev };
+    },
     onSuccess: () => {
       utils.loans.getSchedule.invalidate({ loanId });
       toast.success("Cuota marcada como pendiente");
     },
-    onError: (e) => toast.error("Error: " + e.message),
+    onError: (e, _, ctx) => {
+      if (ctx?.prev) utils.loans.getSchedule.setData({ loanId }, ctx.prev);
+      toast.error("Error: " + e.message);
+    },
   });
 
   const deleteLoanMutation = trpc.loans.delete.useMutation({
@@ -157,6 +183,18 @@ export default function LoanDetail() {
   });
 
   const createPaymentMutation = trpc.payments.create.useMutation({
+    onMutate: async (variables) => {
+      await utils.loans.getSchedule.cancel({ loanId });
+      await utils.payments.list.cancel({ loanId });
+      const prevSchedule = utils.loans.getSchedule.getData({ loanId });
+      const prevPayments = utils.payments.list.getData({ loanId });
+      if (prevSchedule && variables.scheduleId) {
+        utils.loans.getSchedule.setData({ loanId }, 
+          prevSchedule.map(r => r.id === variables.scheduleId ? { ...r, isPaid: true } : r)
+        );
+      }
+      return { prevSchedule, prevPayments };
+    },
     onSuccess: () => {
       utils.payments.list.invalidate({ loanId });
       utils.loans.getSchedule.invalidate({ loanId });
@@ -166,7 +204,11 @@ export default function LoanDetail() {
       setPaymentForm({ amount: "", paymentDate: new Date().toISOString().split("T")[0], paymentMethod: "cash", notes: "" });
       setSelectedScheduleId(null);
     },
-    onError: (e) => toast.error("Error al registrar pago: " + e.message),
+    onError: (e, _, ctx) => {
+      if (ctx?.prevSchedule) utils.loans.getSchedule.setData({ loanId }, ctx.prevSchedule);
+      if (ctx?.prevPayments) utils.payments.list.setData({ loanId }, ctx.prevPayments);
+      toast.error("Error al registrar pago: " + e.message);
+    },
   });
 
   function openPaymentDialog(scheduleId?: number, amount?: string) {
