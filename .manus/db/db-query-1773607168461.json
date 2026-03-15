@@ -1,9 +1,0 @@
-{
-  "query": "UPDATE payments p\nSET p.scheduleId = (\n  SELECT s.id FROM amortization_schedule s\n  WHERE s.loanId = p.loanId\n  AND s.isPaid = false\n  ORDER BY ABS(DATEDIFF(s.dueDate, p.paymentDate))\n  LIMIT 1\n)\nWHERE p.scheduleId IS NULL;",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute UPDATE payments p\nSET p.scheduleId = (\n  SELECT s.id FROM amortization_schedule s\n  WHERE s.loanId = p.loanId\n  AND s.isPaid = false\n  ORDER BY ABS(DATEDIFF(s.dueDate, p.paymentDate))\n  LIMIT 1\n)\nWHERE p.scheduleId IS NULL;",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 80
-}
