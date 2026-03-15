@@ -154,8 +154,9 @@
 
 
 ## BUGS - CRÍTICO: Marcado de cuotas pagadas
-- [x] Las cuotas no se marcan como pagadas después de registrar pago (arreglado: invalidate simplificado)
+- [x] Las cuotas no se marcan como pagadas después de registrar pago (ARREGLADO: frontend sugiere cuota automáticamente)
 - [x] El botón siempre dice "Pagar" incluso si la cuota ya está pagada (ahora dice "✓ Pagada")
 - [x] Necesita mostrar cuotas pagadas con color verde/fondo diferente (fondo verde-100 con texto verde-900)
 - [x] Validar que no se duplique el pago (botón deshabilitado cuando ya está pagada)
 - [x] Mostrar claramente cuál cuota está cubierta (fila verde + ✓ Pagada)
+- [x] Diálogo de pago sugiere automáticamente la cuota más cercana a la fecha del pago

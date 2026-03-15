@@ -187,13 +187,32 @@ export default function LoanDetail() {
     setShowPaymentDialog(true);
   }
 
+  function getAutoScheduleId(): number | undefined {
+    if (selectedScheduleId) return selectedScheduleId;
+    if (!schedule || schedule.length === 0) return undefined;
+    
+    const paymentDate = new Date(paymentForm.paymentDate);
+    const unpaidSchedules = schedule.filter(s => !s.isPaid);
+    if (unpaidSchedules.length === 0) return undefined;
+    
+    // Encontrar la cuota no pagada más cercana a la fecha del pago
+    const closest = unpaidSchedules.reduce((prev, curr) => {
+      const prevDiff = Math.abs(new Date(prev.dueDate as unknown as string).getTime() - paymentDate.getTime());
+      const currDiff = Math.abs(new Date(curr.dueDate as unknown as string).getTime() - paymentDate.getTime());
+      return currDiff < prevDiff ? curr : prev;
+    });
+    
+    return closest.id;
+  }
+
   function handlePaymentSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!loan) return;
+    const autoScheduleId = getAutoScheduleId();
     createPaymentMutation.mutate({
       loanId,
       borrowerId: loan.borrowerId,
-      scheduleId: selectedScheduleId ?? undefined,
+      scheduleId: autoScheduleId,
       amount: parseFloat(paymentForm.amount),
       paymentDate: paymentForm.paymentDate,
       paymentMethod: paymentForm.paymentMethod as any,
@@ -599,9 +618,22 @@ export default function LoanDetail() {
                 rows={2}
               />
             </div>
-            {selectedScheduleId && (
-              <p className="text-xs text-muted-foreground bg-muted/50 rounded p-2">
-                Este pago se asociará a la cuota #{schedule?.find((r) => r.id === selectedScheduleId)?.periodNumber} y la marcará como pagada.
+            {getAutoScheduleId() && (
+              <div className="bg-blue-50 border border-blue-200 rounded p-3 space-y-1">
+                <p className="text-xs font-medium text-blue-900">
+                  ✓ Cuota Sugerida: #{schedule?.find((r) => r.id === getAutoScheduleId())?.periodNumber}
+                </p>
+                <p className="text-xs text-blue-800">
+                  Vencimiento: {formatDate(schedule?.find((r) => r.id === getAutoScheduleId())?.dueDate as unknown as string)}
+                </p>
+                <p className="text-xs text-blue-700">
+                  Este pago se asociará automáticamente a esta cuota y la marcará como pagada.
+                </p>
+              </div>
+            )}
+            {!getAutoScheduleId() && (
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+                ⚠ No hay cuotas pendientes para asociar este pago.
               </p>
             )}
             <DialogFooter>
