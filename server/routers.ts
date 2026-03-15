@@ -325,14 +325,35 @@ const paymentsRouter = router({
       notes: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      let finalScheduleId = input.scheduleId;
+      
+      // Si no viene scheduleId, buscar la cuota no pagada mas cercana a esa fecha
+      if (!finalScheduleId) {
+        const schedule = await getAmortizationSchedule(input.loanId);
+        if (schedule && schedule.length > 0) {
+          const paymentDate = new Date(input.paymentDate);
+          const unpaidSchedules = schedule.filter(s => !s.isPaid);
+          if (unpaidSchedules.length > 0) {
+            const sorted = unpaidSchedules.sort((a, b) => {
+              const diffA = Math.abs(new Date(a.dueDate as unknown as string).getTime() - paymentDate.getTime());
+              const diffB = Math.abs(new Date(b.dueDate as unknown as string).getTime() - paymentDate.getTime());
+              return diffA - diffB;
+            });
+            finalScheduleId = sorted[0].id;
+          }
+        }
+      }
+      
       await createPayment({
         ...input,
         userId: ctx.user.id,
         amount: input.amount.toString(),
+        scheduleId: finalScheduleId,
       } as any);
-      // Si viene con scheduleId, marcar la cuota como pagada
-      if (input.scheduleId) {
-        await markScheduleRowPaid(input.scheduleId);
+      
+      // Marcar la cuota como pagada
+      if (finalScheduleId) {
+        await markScheduleRowPaid(finalScheduleId);
       }
       return { success: true };
     }),
