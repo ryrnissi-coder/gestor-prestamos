@@ -112,45 +112,23 @@ export default function LoanDetail() {
   );
 
   const markPaidMutation = trpc.loans.markPaid.useMutation({
-    onMutate: async (variables) => {
-      await utils.loans.getSchedule.cancel({ loanId });
-      const prev = utils.loans.getSchedule.getData({ loanId });
-      if (prev) {
-        utils.loans.getSchedule.setData({ loanId }, 
-          prev.map(r => r.id === variables.scheduleId ? { ...r, isPaid: true } : r)
-        );
-      }
-      return { prev };
-    },
-    onSuccess: () => {
-      utils.loans.getSchedule.invalidate({ loanId });
-      utils.payments.list.invalidate({ loanId });
-      utils.dashboard.stats.invalidate();
+    onSuccess: async () => {
+      await utils.loans.getSchedule.invalidate({ loanId });
+      await utils.payments.list.invalidate({ loanId });
+      await utils.dashboard.stats.invalidate();
       toast.success("Cuota marcada como pagada");
     },
-    onError: (e, _, ctx) => {
-      if (ctx?.prev) utils.loans.getSchedule.setData({ loanId }, ctx.prev);
+    onError: (e) => {
       toast.error("Error: " + e.message);
     },
   });
 
   const markUnpaidMutation = trpc.loans.markUnpaid.useMutation({
-    onMutate: async (variables) => {
-      await utils.loans.getSchedule.cancel({ loanId });
-      const prev = utils.loans.getSchedule.getData({ loanId });
-      if (prev) {
-        utils.loans.getSchedule.setData({ loanId }, 
-          prev.map(r => r.id === variables.scheduleId ? { ...r, isPaid: false } : r)
-        );
-      }
-      return { prev };
-    },
-    onSuccess: () => {
-      utils.loans.getSchedule.invalidate({ loanId });
+    onSuccess: async () => {
+      await utils.loans.getSchedule.invalidate({ loanId });
       toast.success("Cuota marcada como pendiente");
     },
-    onError: (e, _, ctx) => {
-      if (ctx?.prev) utils.loans.getSchedule.setData({ loanId }, ctx.prev);
+    onError: (e) => {
       toast.error("Error: " + e.message);
     },
   });
@@ -183,30 +161,17 @@ export default function LoanDetail() {
   });
 
   const createPaymentMutation = trpc.payments.create.useMutation({
-    onMutate: async (variables) => {
-      await utils.loans.getSchedule.cancel({ loanId });
-      await utils.payments.list.cancel({ loanId });
-      const prevSchedule = utils.loans.getSchedule.getData({ loanId });
-      const prevPayments = utils.payments.list.getData({ loanId });
-      if (prevSchedule && variables.scheduleId) {
-        utils.loans.getSchedule.setData({ loanId }, 
-          prevSchedule.map(r => r.id === variables.scheduleId ? { ...r, isPaid: true } : r)
-        );
-      }
-      return { prevSchedule, prevPayments };
-    },
-    onSuccess: () => {
-      utils.payments.list.invalidate({ loanId });
-      utils.loans.getSchedule.invalidate({ loanId });
-      utils.dashboard.stats.invalidate();
+    onSuccess: async () => {
+      // Forzar recarga de la tabla de amortización
+      await utils.loans.getSchedule.invalidate({ loanId });
+      await utils.payments.list.invalidate({ loanId });
+      await utils.dashboard.stats.invalidate();
       toast.success("Pago registrado exitosamente");
       setShowPaymentDialog(false);
       setPaymentForm({ amount: "", paymentDate: new Date().toISOString().split("T")[0], paymentMethod: "cash", notes: "" });
       setSelectedScheduleId(null);
     },
-    onError: (e, _, ctx) => {
-      if (ctx?.prevSchedule) utils.loans.getSchedule.setData({ loanId }, ctx.prevSchedule);
-      if (ctx?.prevPayments) utils.payments.list.setData({ loanId }, ctx.prevPayments);
+    onError: (e) => {
       toast.error("Error al registrar pago: " + e.message);
     },
   });
@@ -458,7 +423,7 @@ export default function LoanDetail() {
                         key={row.id}
                         className={`border-b transition-colors ${
                           row.isPaid
-                            ? "bg-green-50/40"
+                            ? "bg-green-100 text-green-900"
                             : overdue
                             ? "bg-red-50/40"
                             : "hover:bg-muted/20"
@@ -492,10 +457,10 @@ export default function LoanDetail() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-6 text-xs text-muted-foreground"
+                              className="h-6 text-xs text-green-600 font-semibold hover:bg-green-200"
                               onClick={() => markUnpaidMutation.mutate({ scheduleId: row.id })}
                             >
-                              Desmarcar
+                              ✓ Pagada
                             </Button>
                           ) : (
                             <Button
