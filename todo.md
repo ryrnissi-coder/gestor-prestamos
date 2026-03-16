@@ -170,3 +170,12 @@
 - [x] Deshabilitar botones de cuotas fuera de orden en tabla de amortización
 - [x] Mostrar tooltip/mensaje cuando se intenta pagar fuera de orden
 - [x] Tests para validación de orden de pagos (3 tests pasando)
+
+
+## BUGS - CRÍTICO: Error removeChild en móvil
+- [ ] NotFoundError: Error al ejecutar 'removeChild' en móvil
+- [ ] Aparece cada que se hace clic en cualquier elemento
+- [ ] Requiere recargar página para que funcione de nuevo
+- [ ] Revisar componentes que manipulan el DOM
+- [ ] Revisar si hay conflictos con React Strict Mode
+- [ ] Desactivar service workers si están causando conflictos
