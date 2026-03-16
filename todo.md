@@ -170,3 +170,9 @@
 - [x] Deshabilitar botones de cuotas fuera de orden en tabla de amortización
 - [x] Mostrar tooltip/mensaje cuando se intenta pagar fuera de orden
 - [x] Tests para validación de orden de pagos (3 tests pasando)
+
+
+## BUGS - ARREGLADOS EN PRODUCCIÓN
+- [x] Error "NoFoundError" en teléfono cada que se hace clic en algo (ARREGLADO: catch-all ahora no intercepta assets)
+- [x] Revisar logs del servidor para identificar la causa (catch-all devolviendo index.html para assets)
+- [x] Verificar rutas de assets y configuración de Express (ajustado vite.ts y serveStatic)
