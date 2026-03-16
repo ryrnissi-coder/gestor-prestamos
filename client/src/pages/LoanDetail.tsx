@@ -486,6 +486,8 @@ export default function LoanDetail() {
                               variant="outline"
                               size="sm"
                               className="h-6 text-xs gap-0.5 px-1.5"
+                              disabled={schedule.some(s => s.periodNumber < row.periodNumber && !s.isPaid)}
+                              title={schedule.some(s => s.periodNumber < row.periodNumber && !s.isPaid) ? "Debe pagar las cuotas anteriores primero" : ""}
                               onClick={() => openPaymentDialog(row.id, row.totalPayment as string)}
                             >
                               <Plus className="h-3 w-3" />
