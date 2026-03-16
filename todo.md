@@ -153,6 +153,9 @@
 - [ ] Tests para marcar pagos desde tabla de amortización
 
 
+## BUGS - ARREGLADOS
+- [x] Error de carga de assets en dispositivos móviles (ruta de dist/public corregida)
+
 ## BUGS - CRÍTICO: Marcado de cuotas pagadas
 - [x] Las cuotas no se marcan como pagadas después de registrar pago (ARREGLADO: frontend sugiere cuota automáticamente)
 - [x] El botón siempre dice "Pagar" incluso si la cuota ya está pagada (ahora dice "✓ Pagada")
