@@ -325,28 +325,6 @@ const paymentsRouter = router({
       notes: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      // Si viene con scheduleId, validar que se puede pagar en orden
-      if (input.scheduleId) {
-        const schedule = await getAmortizationSchedule(input.loanId);
-        const currentSchedule = schedule.find(s => s.id === input.scheduleId);
-        
-        if (!currentSchedule) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Schedule not found" });
-        }
-        
-        // Validar que todas las cuotas anteriores estén pagadas
-        const unpaidBefore = schedule.filter(
-          s => s.periodNumber < currentSchedule.periodNumber && !s.isPaid
-        );
-        
-        if (unpaidBefore.length > 0) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `No se puede pagar la cuota ${currentSchedule.periodNumber}. Primero debe pagar las cuotas: ${unpaidBefore.map(s => s.periodNumber).join(", ")}`
-          });
-        }
-      }
-      
       await createPayment({
         ...input,
         userId: ctx.user.id,
