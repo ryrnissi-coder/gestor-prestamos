@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
@@ -29,21 +30,6 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  
-  // Agregar headers de cache control para evitar cacheo en móvil
-  app.use((req, res, next) => {
-    // No cachear HTML, solo cachear assets con hash
-    if (req.path.endsWith('.html') || req.path === '/') {
-      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.set('Pragma', 'no-cache');
-      res.set('Expires', '0');
-    } else if (req.path.match(/\.[a-f0-9]{8}\.(js|css)$/)) {
-      // Assets con hash: cachear por 1 año
-      res.set('Cache-Control', 'public, max-age=31536000, immutable');
-    }
-    next();
-  });
-  
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

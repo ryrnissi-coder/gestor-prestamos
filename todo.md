@@ -163,3 +163,10 @@
 - [x] Validar que no se duplique el pago (botón deshabilitado cuando ya está pagada)
 - [x] Mostrar claramente cuál cuota está cubierta (fila verde + ✓ Pagada)
 - [x] Diálogo de pago sugiere automáticamente la cuota más cercana a la fecha del pago
+
+
+## VALIDACIÓN DE ORDEN DE PAGOS - COMPLETADO
+- [x] Crear procedimiento tRPC para validar orden de pagos
+- [x] Deshabilitar botones de cuotas fuera de orden en tabla de amortización
+- [x] Mostrar tooltip/mensaje cuando se intenta pagar fuera de orden
+- [x] Tests para validación de orden de pagos (3 tests pasando)
