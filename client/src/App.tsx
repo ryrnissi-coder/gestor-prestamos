@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -21,6 +22,13 @@ function ClientDashboardWrapper() {
   const { user, loading } = useAuth();
   const [, setLocation] = useLocation();
 
+  // Move navigation to useEffect to avoid rendering during render phase
+  useEffect(() => {
+    if (!loading && (!user || user.role !== "client")) {
+      setLocation("/");
+    }
+  }, [loading, user, setLocation]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -30,7 +38,6 @@ function ClientDashboardWrapper() {
   }
 
   if (!user || user.role !== "client") {
-    setLocation("/");
     return null;
   }
 

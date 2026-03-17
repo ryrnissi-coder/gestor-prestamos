@@ -94,16 +94,27 @@ const MAPS_PROXY_URL = `${FORGE_BASE_URL}/v1/maps/proxy`;
 
 function loadMapScript() {
   return new Promise(resolve => {
+    // Check if script already exists to avoid loading twice
+    const existingScript = document.querySelector(
+      `script[src*="${MAPS_PROXY_URL}"]`
+    );
+    if (existingScript) {
+      resolve(null);
+      return;
+    }
+
     const script = document.createElement("script");
     script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
     script.async = true;
     script.crossOrigin = "anonymous";
     script.onload = () => {
       resolve(null);
-      script.remove(); // Clean up immediately
+      // Don't remove the script - keep it cached in the DOM
+      // Removing it can cause "removeChild" errors in some browsers
     };
     script.onerror = () => {
       console.error("Failed to load Google Maps script");
+      resolve(null);
     };
     document.head.appendChild(script);
   });
