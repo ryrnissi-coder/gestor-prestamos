@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   getBorrowers,
   getBorrowerById,
+  getBorrowerByIdOnly,
   createBorrower,
   updateBorrower,
   deleteBorrower,
@@ -426,7 +427,7 @@ const invitationsRouter = router({
       if (new Date() > invitation.expiresAt) throw new TRPCError({ code: "BAD_REQUEST", message: "Invitation expired" });
 
       // Create client user
-      const borrower = await getBorrowerById(invitation.borrowerId, 0); // We don't have userId yet
+      const borrower = await getBorrowerByIdOnly(invitation.borrowerId);
       if (!borrower) throw new TRPCError({ code: "NOT_FOUND", message: "Borrower not found" });
 
       const userId = await createClientUser(invitation.borrowerId, invitation.email, `${borrower.firstName} ${borrower.lastName}`);

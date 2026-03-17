@@ -21,8 +21,19 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
+  
+  // Only serve index.html for SPA navigation (no file extensions)
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    
+    // Don't intercept API calls, files with extensions, or special paths
+    if (
+      url.startsWith("/api") || 
+      url.includes(".") || 
+      url.startsWith("/.well-known")
+    ) {
+      return next();
+    }
 
     try {
       const clientTemplate = path.resolve(
@@ -55,10 +66,14 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, { fallthrough: true }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
+  // Only fall through to index.html for SPA navigation (no file extensions)
+  app.use("*", (req, res, next) => {
+    // Don't intercept API calls or files with extensions
+    if (req.originalUrl.startsWith("/api") || req.originalUrl.includes(".")) {
+      return res.status(404).end();
+    }
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

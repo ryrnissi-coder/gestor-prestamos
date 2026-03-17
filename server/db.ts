@@ -81,6 +81,13 @@ export async function getBorrowerById(id: number, userId: number) {
   return result[0];
 }
 
+export async function getBorrowerByIdOnly(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(borrowers).where(eq(borrowers.id, id)).limit(1);
+  return result[0];
+}
+
 export async function createBorrower(data: InsertBorrower) {
   const db = await getDb();
   if (!db) throw new Error("DB not available");
