@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import {
   formatCurrency,
@@ -94,10 +94,18 @@ export default function LoanDetail() {
 
   const utils = trpc.useUtils();
 
-  const { data: loan, isLoading: loanLoading } = trpc.loans.get.useQuery(
+  const { data: loan, isLoading: loanLoading, error: loanError } = trpc.loans.get.useQuery(
     { id: loanId },
     { enabled: !!loanId }
   );
+
+  // Redirigir si el préstamo no existe
+  useEffect(() => {
+    if (loanError && !loanLoading) {
+      toast.error("Préstamo no encontrado");
+      setLocation("/loans");
+    }
+  }, [loanError, loanLoading, setLocation]);
   const { data: schedule, isLoading: scheduleLoading } = trpc.loans.getSchedule.useQuery(
     { loanId },
     { enabled: !!loanId }
@@ -237,9 +245,10 @@ export default function LoanDetail() {
     );
   }
 
-  if (!loan) {
+  if (!loan || loanError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <AlertTriangle className="h-12 w-12 text-destructive opacity-50" />
         <p className="text-muted-foreground">Préstamo no encontrado</p>
         <Button variant="outline" onClick={() => setLocation("/loans")}>
           <ArrowLeft className="h-4 w-4 mr-2" />

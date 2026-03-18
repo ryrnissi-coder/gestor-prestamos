@@ -326,9 +326,10 @@ const paymentsRouter = router({
       notes: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      const schedule = await getAmortizationSchedule(input.loanId);
+      
       // Si viene con scheduleId, validar que se puede pagar en orden
       if (input.scheduleId) {
-        const schedule = await getAmortizationSchedule(input.loanId);
         const currentSchedule = schedule.find(s => s.id === input.scheduleId);
         
         if (!currentSchedule) {
@@ -346,6 +347,21 @@ const paymentsRouter = router({
             message: `No se puede pagar la cuota ${currentSchedule.periodNumber}. Primero debe pagar las cuotas: ${unpaidBefore.map(s => s.periodNumber).join(", ")}`
           });
         }
+      } else {
+        // Si NO viene con scheduleId, buscar automaticamente la cuota no pagada mas cercana
+        const paymentDate = new Date(input.paymentDate);
+        const unpaidSchedules = schedule.filter(s => !s.isPaid);
+        
+        if (unpaidSchedules.length > 0) {
+          // Encontrar la cuota no pagada mas cercana a la fecha del pago
+          const closest = unpaidSchedules.reduce((prev, curr) => {
+            const prevDiff = Math.abs(new Date(prev.dueDate as unknown as string).getTime() - paymentDate.getTime());
+            const currDiff = Math.abs(new Date(curr.dueDate as unknown as string).getTime() - paymentDate.getTime());
+            return currDiff < prevDiff ? curr : prev;
+          });
+          
+          input.scheduleId = closest.id;
+        }
       }
       
       await createPayment({
@@ -353,7 +369,7 @@ const paymentsRouter = router({
         userId: ctx.user.id,
         amount: input.amount.toString(),
       } as any);
-      // Si viene con scheduleId, marcar la cuota como pagada
+      // Marcar la cuota como pagada si se encontro
       if (input.scheduleId) {
         await markScheduleRowPaid(input.scheduleId);
       }

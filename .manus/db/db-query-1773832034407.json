@@ -1,0 +1,52 @@
+{
+  "query": "SELECT id, borrowerId, amount, interestRate, status FROM loans WHERE userId = 1 LIMIT 20;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, borrowerId, amount, interestRate, status FROM loans WHERE userId = 1 LIMIT 20;",
+  "rows": [
+    {
+      "id": "30002",
+      "borrowerId": "1",
+      "amount": "600000.00",
+      "interestRate": "0.9500",
+      "status": "active"
+    },
+    {
+      "id": "60001",
+      "borrowerId": "30001",
+      "amount": "100000.00",
+      "interestRate": "2.5000",
+      "status": "active"
+    },
+    {
+      "id": "90001",
+      "borrowerId": "60001",
+      "amount": "1900000.00",
+      "interestRate": "1.1900",
+      "status": "active"
+    },
+    {
+      "id": "120001",
+      "borrowerId": "90001",
+      "amount": "200000.00",
+      "interestRate": "1.7000",
+      "status": "active"
+    },
+    {
+      "id": "150002",
+      "borrowerId": "1",
+      "amount": "3003000.00",
+      "interestRate": "3.0000",
+      "status": "active"
+    },
+    {
+      "id": "180001",
+      "borrowerId": "30001",
+      "amount": "50000.00",
+      "interestRate": "1.7000",
+      "status": "active"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tborrowerId\tamount\tinterestRate\tstatus\n30002\t1\t600000.00\t0.9500\tactive\n60001\t30001\t100000.00\t2.5000\tactive\n90001\t60001\t1900000.00\t1.1900\tactive\n120001\t90001\t200000.00\t1.7000\tactive\n150002\t1\t3003000.00\t3.0000\tactive\n180001\t30001\t50000.00\t1.7000\tactive\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

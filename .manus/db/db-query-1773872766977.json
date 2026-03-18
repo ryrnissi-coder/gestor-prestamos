@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, periodNumber, isPaid, paidAt FROM amortization_schedule WHERE id = 30088;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, periodNumber, isPaid, paidAt FROM amortization_schedule WHERE id = 30088;",
+  "rows": [
+    {
+      "id": "30088",
+      "periodNumber": "11",
+      "isPaid": "1",
+      "paidAt": "2026-03-15 20:43:43"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tperiodNumber\tisPaid\tpaidAt\n30088\t11\t1\t2026-03-15 20:43:43\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

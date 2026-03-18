@@ -1,0 +1,556 @@
+{
+  "query": "SELECT id, periodNumber, dueDate, isPaid, totalPayment FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, periodNumber, dueDate, isPaid, totalPayment FROM amortization_schedule WHERE loanId = 90001 ORDER BY periodNumber;",
+  "rows": [
+    {
+      "id": "30078",
+      "periodNumber": "1",
+      "dueDate": "2025-10-21",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30079",
+      "periodNumber": "2",
+      "dueDate": "2025-10-28",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30080",
+      "periodNumber": "3",
+      "dueDate": "2025-11-04",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30081",
+      "periodNumber": "4",
+      "dueDate": "2025-11-11",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30082",
+      "periodNumber": "5",
+      "dueDate": "2025-11-18",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30083",
+      "periodNumber": "6",
+      "dueDate": "2025-11-25",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30084",
+      "periodNumber": "7",
+      "dueDate": "2025-12-02",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30085",
+      "periodNumber": "8",
+      "dueDate": "2025-12-09",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30086",
+      "periodNumber": "9",
+      "dueDate": "2025-12-16",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30087",
+      "periodNumber": "10",
+      "dueDate": "2025-12-23",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30088",
+      "periodNumber": "11",
+      "dueDate": "2025-12-30",
+      "isPaid": "1",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30089",
+      "periodNumber": "12",
+      "dueDate": "2026-01-06",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30090",
+      "periodNumber": "13",
+      "dueDate": "2026-01-13",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30091",
+      "periodNumber": "14",
+      "dueDate": "2026-01-20",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30092",
+      "periodNumber": "15",
+      "dueDate": "2026-01-27",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30093",
+      "periodNumber": "16",
+      "dueDate": "2026-02-03",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30094",
+      "periodNumber": "17",
+      "dueDate": "2026-02-10",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30095",
+      "periodNumber": "18",
+      "dueDate": "2026-02-17",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30096",
+      "periodNumber": "19",
+      "dueDate": "2026-02-24",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30097",
+      "periodNumber": "20",
+      "dueDate": "2026-03-03",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30098",
+      "periodNumber": "21",
+      "dueDate": "2026-03-10",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30099",
+      "periodNumber": "22",
+      "dueDate": "2026-03-17",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30100",
+      "periodNumber": "23",
+      "dueDate": "2026-03-24",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30101",
+      "periodNumber": "24",
+      "dueDate": "2026-03-31",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30102",
+      "periodNumber": "25",
+      "dueDate": "2026-04-07",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30103",
+      "periodNumber": "26",
+      "dueDate": "2026-04-14",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30104",
+      "periodNumber": "27",
+      "dueDate": "2026-04-21",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30105",
+      "periodNumber": "28",
+      "dueDate": "2026-04-28",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30106",
+      "periodNumber": "29",
+      "dueDate": "2026-05-05",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30107",
+      "periodNumber": "30",
+      "dueDate": "2026-05-12",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30108",
+      "periodNumber": "31",
+      "dueDate": "2026-05-19",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30109",
+      "periodNumber": "32",
+      "dueDate": "2026-05-26",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30110",
+      "periodNumber": "33",
+      "dueDate": "2026-06-02",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30111",
+      "periodNumber": "34",
+      "dueDate": "2026-06-09",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30112",
+      "periodNumber": "35",
+      "dueDate": "2026-06-16",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30113",
+      "periodNumber": "36",
+      "dueDate": "2026-06-23",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30114",
+      "periodNumber": "37",
+      "dueDate": "2026-06-30",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30115",
+      "periodNumber": "38",
+      "dueDate": "2026-07-07",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30116",
+      "periodNumber": "39",
+      "dueDate": "2026-07-14",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30117",
+      "periodNumber": "40",
+      "dueDate": "2026-07-21",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30118",
+      "periodNumber": "41",
+      "dueDate": "2026-07-28",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30119",
+      "periodNumber": "42",
+      "dueDate": "2026-08-04",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30120",
+      "periodNumber": "43",
+      "dueDate": "2026-08-11",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30121",
+      "periodNumber": "44",
+      "dueDate": "2026-08-18",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30122",
+      "periodNumber": "45",
+      "dueDate": "2026-08-25",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30123",
+      "periodNumber": "46",
+      "dueDate": "2026-09-01",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30124",
+      "periodNumber": "47",
+      "dueDate": "2026-09-08",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30125",
+      "periodNumber": "48",
+      "dueDate": "2026-09-15",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30126",
+      "periodNumber": "49",
+      "dueDate": "2026-09-22",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30127",
+      "periodNumber": "50",
+      "dueDate": "2026-09-29",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30128",
+      "periodNumber": "51",
+      "dueDate": "2026-10-06",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30129",
+      "periodNumber": "52",
+      "dueDate": "2026-10-13",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30130",
+      "periodNumber": "53",
+      "dueDate": "2026-10-20",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30131",
+      "periodNumber": "54",
+      "dueDate": "2026-10-27",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30132",
+      "periodNumber": "55",
+      "dueDate": "2026-11-03",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30133",
+      "periodNumber": "56",
+      "dueDate": "2026-11-10",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30134",
+      "periodNumber": "57",
+      "dueDate": "2026-11-17",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30135",
+      "periodNumber": "58",
+      "dueDate": "2026-11-24",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30136",
+      "periodNumber": "59",
+      "dueDate": "2026-12-01",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30137",
+      "periodNumber": "60",
+      "dueDate": "2026-12-08",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30138",
+      "periodNumber": "61",
+      "dueDate": "2026-12-15",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30139",
+      "periodNumber": "62",
+      "dueDate": "2026-12-22",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30140",
+      "periodNumber": "63",
+      "dueDate": "2026-12-29",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30141",
+      "periodNumber": "64",
+      "dueDate": "2027-01-05",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30142",
+      "periodNumber": "65",
+      "dueDate": "2027-01-12",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30143",
+      "periodNumber": "66",
+      "dueDate": "2027-01-19",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30144",
+      "periodNumber": "67",
+      "dueDate": "2027-01-26",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30145",
+      "periodNumber": "68",
+      "dueDate": "2027-02-02",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30146",
+      "periodNumber": "69",
+      "dueDate": "2027-02-09",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30147",
+      "periodNumber": "70",
+      "dueDate": "2027-02-16",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30148",
+      "periodNumber": "71",
+      "dueDate": "2027-02-23",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30149",
+      "periodNumber": "72",
+      "dueDate": "2027-03-02",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30150",
+      "periodNumber": "73",
+      "dueDate": "2027-03-09",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30151",
+      "periodNumber": "74",
+      "dueDate": "2027-03-16",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30152",
+      "periodNumber": "75",
+      "dueDate": "2027-03-23",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30153",
+      "periodNumber": "76",
+      "dueDate": "2027-03-30",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30154",
+      "periodNumber": "77",
+      "dueDate": "2027-04-06",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    },
+    {
+      "id": "30155",
+      "periodNumber": "78",
+      "dueDate": "2027-04-13",
+      "isPaid": "0",
+      "totalPayment": "54968.97"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tperiodNumber\tdueDate\tisPaid\ttotalPayment\n30078\t1\t2025-10-21\t0\t54968.97\n30079\t2\t2025-10-28\t0\t54968.97\n30080\t3\t2025-11-04\t0\t54968.97\n30081\t4\t2025-11-11\t0\t54968.97\n30082\t5\t2025-11-18\t0\t54968.97\n30083\t6\t2025-11-25\t0\t54968.97\n30084\t7\t2025-12-02\t0\t54968.97\n30085\t8\t2025-12-09\t0\t54968.97\n30086\t9\t2025-12-16\t0\t54968.97\n30087\t10\t2025-12-23\t0\t54968.97\n30088\t11\t2025-12-30\t1\t54968.97\n30089\t12\t2026-01-06\t0\t54968.97\n30090\t13\t2026-01-13\t0\t54968.97\n30091\t14\t2026-01-20\t0\t54968.97\n30092\t15\t2026-01-27\t0\t54968.97\n30093\t16\t2026-02-03\t0\t54968.97\n30094\t17\t2026-02-10\t0\t54968.97\n30095\t18\t2026-02-17\t0\t54968.97\n30096\t19\t2026-02-24\t0\t54968.97\n30097\t20\t2026-03-03\t0\t54968.97\n30098\t21\t2026-03-10\t0\t54968.97\n30099\t22\t2026-03-17\t0\t54968.97\n30100\t23\t2026-03-24\t0\t54968.97\n30101\t24\t2026-03-31\t0\t54968.97\n30102\t25\t2026-04-07\t0\t54968.97\n30103\t26\t2026-04-14\t0\t54968.97\n30104\t27\t2026-04-21\t0\t54968.97\n30105\t28\t2026-04-28\t0\t54968.97\n30106\t29\t2026-05-05\t0\t54968.97\n30107\t30\t2026-05-12\t0\t54968.97\n30108\t31\t2026-05-19\t0\t54968.97\n30109\t32\t2026-05-26\t0\t54968.97\n30110\t33\t2026-06-02\t0\t54968.97\n30111\t34\t2026-06-09\t0\t54968.97\n30112\t35\t2026-06-16\t0\t54968.97\n30113\t36\t2026-06-23\t0\t54968.97\n30114\t37\t2026-06-30\t0\t54968.97\n30115\t38\t2026-07-07\t0\t54968.97\n30116\t39\t2026-07-14\t0\t54968.97\n30117\t40\t2026-07-21\t0\t54968.97\n30118\t41\t2026-07-28\t0\t54968.97\n30119\t42\t2026-08-04\t0\t54968.97\n30120\t43\t2026-08-11\t0\t54968.97\n30121\t44\t2026-08-18\t0\t54968.97\n30122\t45\t2026-08-25\t0\t54968.97\n30123\t46\t2026-09-01\t0\t54968.97\n30124\t47\t2026-09-08\t0\t54968.97\n30125\t48\t2026-09-15\t0\t54968.97\n30126\t49\t2026-09-22\t0\t54968.97\n30127\t50\t2026-09-29\t0\t54968.97\n30128\t51\t2026-10-06\t0\t54968.97\n30129\t52\t2026-10-13\t0\t54968.97\n30130\t53\t2026-10-20\t0\t54968.97\n30131\t54\t2026-10-27\t0\t54968.97\n30132\t55\t2026-11-03\t0\t54968.97\n30133\t56\t2026-11-10\t0\t54968.97\n30134\t57\t2026-11-17\t0\t54968.97\n30135\t58\t2026-11-24\t0\t54968.97\n30136\t59\t2026-12-01\t0\t54968.97\n30137\t60\t2026-12-08\t0\t54968.97\n30138\t61\t2026-12-15\t0\t54968.97\n30139\t62\t2026-12-22\t0\t54968.97\n30140\t63\t2026-12-29\t0\t54968.97\n30141\t64\t2027-01-05\t0\t54968.97\n30142\t65\t2027-01-12\t0\t54968.97\n30143\t66\t2027-01-19\t0\t54968.97\n30144\t67\t2027-01-26\t0\t54968.97\n30145\t68\t2027-02-02\t0\t54968.97\n30146\t69\t2027-02-09\t0\t54968.97\n30147\t70\t2027-02-16\t0\t54968.97\n30148\t71\t2027-02-23\t0\t54968.97\n30149\t72\t2027-03-02\t0\t54968.97\n30150\t73\t2027-03-09\t0\t54968.97\n30151\t74\t2027-03-16\t0\t54968.97\n30152\t75\t2027-03-23\t0\t54968.97\n30153\t76\t2027-03-30\t0\t54968.97\n30154\t77\t2027-04-06\t0\t54968.97\n30155\t78\t2027-04-13\t0\t54968.97\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

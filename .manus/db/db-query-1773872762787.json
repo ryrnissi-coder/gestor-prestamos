@@ -1,0 +1,76 @@
+{
+  "query": "SELECT p.id, p.amount, p.paymentDate, p.scheduleId FROM payments p WHERE p.loanId = 90001 ORDER BY p.paymentDate;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT p.id, p.amount, p.paymentDate, p.scheduleId FROM payments p WHERE p.loanId = 90001 ORDER BY p.paymentDate;",
+  "rows": [
+    {
+      "id": "90001",
+      "amount": "55000.00",
+      "paymentDate": "2025-10-15",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90002",
+      "amount": "55000.00",
+      "paymentDate": "2025-10-22",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90003",
+      "amount": "55000.00",
+      "paymentDate": "2025-10-29",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90004",
+      "amount": "55000.00",
+      "paymentDate": "2025-11-05",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90005",
+      "amount": "55000.00",
+      "paymentDate": "2025-11-12",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90006",
+      "amount": "55000.00",
+      "paymentDate": "2025-11-19",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90007",
+      "amount": "55000.00",
+      "paymentDate": "2025-11-26",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90008",
+      "amount": "55000.00",
+      "paymentDate": "2025-12-03",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90009",
+      "amount": "55000.00",
+      "paymentDate": "2025-12-10",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "90010",
+      "amount": "55000.00",
+      "paymentDate": "2025-12-17",
+      "scheduleId": "30088"
+    },
+    {
+      "id": "210001",
+      "amount": "55000.00",
+      "paymentDate": "2025-12-17",
+      "scheduleId": "30088"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tamount\tpaymentDate\tscheduleId\n90001\t55000.00\t2025-10-15\t30088\n90002\t55000.00\t2025-10-22\t30088\n90003\t55000.00\t2025-10-29\t30088\n90004\t55000.00\t2025-11-05\t30088\n90005\t55000.00\t2025-11-12\t30088\n90006\t55000.00\t2025-11-19\t30088\n90007\t55000.00\t2025-11-26\t30088\n90008\t55000.00\t2025-12-03\t30088\n90009\t55000.00\t2025-12-10\t30088\n90010\t55000.00\t2025-12-17\t30088\n210001\t55000.00\t2025-12-17\t30088\n",
+  "stderr": "",
+  "execution_time_ms": 124
+}

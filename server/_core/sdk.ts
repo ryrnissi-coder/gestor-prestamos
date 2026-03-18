@@ -168,7 +168,7 @@ class SDKServer {
     openId: string,
     options: { expiresInMs?: number; name?: string } = {}
   ): Promise<string> {
-    return this.signSession(
+    const token = await this.signSession(
       {
         openId,
         appId: ENV.appId,
@@ -176,6 +176,9 @@ class SDKServer {
       },
       options
     );
+    console.log("[Auth] Created session token for openId:", openId);
+    console.log("[Auth] JWT_SECRET used (length):", ENV.cookieSecret.length);
+    return token;
   }
 
   async signSession(
@@ -206,6 +209,8 @@ class SDKServer {
     }
 
     try {
+      console.log("[Auth] Verifying session token");
+      console.log("[Auth] JWT_SECRET used (length):", ENV.cookieSecret.length);
       const secretKey = this.getSessionSecret();
       const { payload } = await jwtVerify(cookieValue, secretKey, {
         algorithms: ["HS256"],
@@ -228,6 +233,8 @@ class SDKServer {
       };
     } catch (error) {
       console.warn("[Auth] Session verification failed", String(error));
+      console.warn("[Auth] JWT_SECRET length:", ENV.cookieSecret.length);
+      console.warn("[Auth] Cookie value length:", cookieValue.length);
       return null;
     }
   }
