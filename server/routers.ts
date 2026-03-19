@@ -348,30 +348,37 @@ const paymentsRouter = router({
           });
         }
       } else {
-        // Si NO viene con scheduleId, buscar automaticamente la cuota no pagada mas cercana
-        const paymentDate = new Date(input.paymentDate);
-        const unpaidSchedules = schedule.filter(s => !s.isPaid);
+        // Si NO viene con scheduleId, buscar la PRIMERA cuota no pagada en orden cronológico
+        const unpaidSchedules = schedule.filter(s => !s.isPaid).sort((a, b) => a.periodNumber - b.periodNumber);
         
         if (unpaidSchedules.length > 0) {
-          // Encontrar la cuota no pagada mas cercana a la fecha del pago
-          const closest = unpaidSchedules.reduce((prev, curr) => {
-            const prevDiff = Math.abs(new Date(prev.dueDate as unknown as string).getTime() - paymentDate.getTime());
-            const currDiff = Math.abs(new Date(curr.dueDate as unknown as string).getTime() - paymentDate.getTime());
-            return currDiff < prevDiff ? curr : prev;
-          });
-          
-          input.scheduleId = closest.id;
+          // Asignar a la PRIMERA cuota pendiente (la más antigua)
+          input.scheduleId = unpaidSchedules[0].id;
+          console.log("[PAYMENT] Auto-assigned to first unpaid schedule:", unpaidSchedules[0].periodNumber);
         }
       }
+      
+      console.log("[PAYMENT] Creating payment with scheduleId:", input.scheduleId);
       
       await createPayment({
         ...input,
         userId: ctx.user.id,
         amount: input.amount.toString(),
       } as any);
+      
+      console.log("[PAYMENT] Payment created, marking schedule as paid:", input.scheduleId);
+      
       // Marcar la cuota como pagada si se encontro
       if (input.scheduleId) {
-        await markScheduleRowPaid(input.scheduleId);
+        try {
+          const result = await markScheduleRowPaid(input.scheduleId);
+          console.log("[PAYMENT] Schedule marked as paid, result:", result);
+        } catch (error) {
+          console.error("[PAYMENT] Error marking schedule as paid:", error);
+          throw error;
+        }
+      } else {
+        console.log("[PAYMENT] No scheduleId provided, skipping mark as paid");
       }
       return { success: true };
     }),

@@ -1,0 +1,21 @@
+{
+  "query": "SELECT id, userId, borrowerId, amount, interestRate, interestType, termPeriods, status, insuranceAmount FROM loans WHERE id = 90001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, userId, borrowerId, amount, interestRate, interestType, termPeriods, status, insuranceAmount FROM loans WHERE id = 90001;",
+  "rows": [
+    {
+      "id": "90001",
+      "userId": "1",
+      "borrowerId": "60001",
+      "amount": "1900000.00",
+      "interestRate": "1.1900",
+      "interestType": "simple",
+      "termPeriods": "78",
+      "status": "active",
+      "insuranceAmount": "8000.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tuserId\tborrowerId\tamount\tinterestRate\tinterestType\ttermPeriods\tstatus\tinsuranceAmount\n90001\t1\t60001\t1900000.00\t1.1900\tsimple\t78\tactive\t8000.00\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

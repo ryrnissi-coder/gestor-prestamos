@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, amount, paymentDate, scheduleId, COALESCE(scheduleId, 'NULL') as scheduleId_display FROM payments WHERE loanId = 90001 ORDER BY paymentDate;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT id, amount, paymentDate, scheduleId, COALESCE(scheduleId, 'NULL') as scheduleId_display FROM payments WHERE loanId = 90001 ORDER BY paymentDate;",
+  "rows": [
+    {
+      "id": "90001",
+      "amount": "55000.00",
+      "paymentDate": "2025-10-15",
+      "scheduleId": "30088",
+      "scheduleId_display": "30088"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tamount\tpaymentDate\tscheduleId\tscheduleId_display\n90001\t55000.00\t2025-10-15\t30088\t30088\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}
