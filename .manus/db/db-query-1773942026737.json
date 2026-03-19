@@ -1,0 +1,98 @@
+{
+  "query": "SELECT p.id, p.paymentDate, p.amount, s.periodNumber, s.dueDate, s.isPaid FROM payments p LEFT JOIN amortization_schedule s ON p.scheduleId = s.id WHERE p.loanId = 90001 ORDER BY p.paymentDate;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2Uyn7UgvJcnGdLK.97c7c5c8fc50 --database VzCREzEkfRZvxXJ3jW83Ws --execute SELECT p.id, p.paymentDate, p.amount, s.periodNumber, s.dueDate, s.isPaid FROM payments p LEFT JOIN amortization_schedule s ON p.scheduleId = s.id WHERE p.loanId = 90001 ORDER BY p.paymentDate;",
+  "rows": [
+    {
+      "id": "90001",
+      "paymentDate": "2025-10-15",
+      "amount": "55000.00",
+      "periodNumber": "1",
+      "dueDate": "2025-10-21",
+      "isPaid": "1"
+    },
+    {
+      "id": "300001",
+      "paymentDate": "2025-10-21",
+      "amount": "55000.00",
+      "periodNumber": "1",
+      "dueDate": "2025-10-21",
+      "isPaid": "1"
+    },
+    {
+      "id": "300002",
+      "paymentDate": "2025-10-28",
+      "amount": "55000.00",
+      "periodNumber": "2",
+      "dueDate": "2025-10-28",
+      "isPaid": "1"
+    },
+    {
+      "id": "300003",
+      "paymentDate": "2025-11-04",
+      "amount": "55000.00",
+      "periodNumber": "3",
+      "dueDate": "2025-11-04",
+      "isPaid": "1"
+    },
+    {
+      "id": "300004",
+      "paymentDate": "2025-11-11",
+      "amount": "55000.00",
+      "periodNumber": "4",
+      "dueDate": "2025-11-11",
+      "isPaid": "1"
+    },
+    {
+      "id": "300005",
+      "paymentDate": "2025-11-18",
+      "amount": "55000.00",
+      "periodNumber": "5",
+      "dueDate": "2025-11-18",
+      "isPaid": "1"
+    },
+    {
+      "id": "300006",
+      "paymentDate": "2025-11-25",
+      "amount": "55000.00",
+      "periodNumber": "6",
+      "dueDate": "2025-11-25",
+      "isPaid": "1"
+    },
+    {
+      "id": "300007",
+      "paymentDate": "2025-12-02",
+      "amount": "55000.00",
+      "periodNumber": "7",
+      "dueDate": "2025-12-02",
+      "isPaid": "1"
+    },
+    {
+      "id": "300008",
+      "paymentDate": "2025-12-09",
+      "amount": "55000.00",
+      "periodNumber": "8",
+      "dueDate": "2025-12-09",
+      "isPaid": "1"
+    },
+    {
+      "id": "300009",
+      "paymentDate": "2025-12-16",
+      "amount": "55000.00",
+      "periodNumber": "9",
+      "dueDate": "2025-12-16",
+      "isPaid": "1"
+    },
+    {
+      "id": "300010",
+      "paymentDate": "2025-12-23",
+      "amount": "55000.00",
+      "periodNumber": "10",
+      "dueDate": "2025-12-23",
+      "isPaid": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpaymentDate\tamount\tperiodNumber\tdueDate\tisPaid\n90001\t2025-10-15\t55000.00\t1\t2025-10-21\t1\n300001\t2025-10-21\t55000.00\t1\t2025-10-21\t1\n300002\t2025-10-28\t55000.00\t2\t2025-10-28\t1\n300003\t2025-11-04\t55000.00\t3\t2025-11-04\t1\n300004\t2025-11-11\t55000.00\t4\t2025-11-11\t1\n300005\t2025-11-18\t55000.00\t5\t2025-11-18\t1\n300006\t2025-11-25\t55000.00\t6\t2025-11-25\t1\n300007\t2025-12-02\t55000.00\t7\t2025-12-02\t1\n300008\t2025-12-09\t55000.00\t8\t2025-12-09\t1\n300009\t2025-12-16\t55000.00\t9\t2025-12-16\t1\n300010\t2025-12-23\t55000.00\t10\t2025-12-23\t1\n",
+  "stderr": "",
+  "execution_time_ms": 71
+}
